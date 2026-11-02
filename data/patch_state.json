@@ -1,0 +1,6 @@
+{
+  "ddragon_version": "16.21.1",
+  "public_patch": "26.21",
+  "initialized_at_utc": "2026-11-02T01:00:00+00:00",
+  "note": "Initial known patch is 26.21; Data Dragon uses 16.21.x format. Watcher detects new static version, not confirmed live deployment."
+}

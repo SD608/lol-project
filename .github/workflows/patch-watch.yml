@@ -1,0 +1,44 @@
+name: Patch change detection
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/check_patch.py
+      - rift/**
+      - .github/workflows/patch-watch.yml
+  schedule:
+    - cron: '20 1 * * *' # UTC 01:20 = KST 10:20
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: patch-watch
+  cancel-in-progress: false
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate detector
+        run: python -m unittest discover -s tests -v
+      - name: Check Riot Data Dragon
+        id: detect
+        run: python scripts/check_patch.py
+      - name: Upload change report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patch-review-report
+          path: reports/
+          if-no-files-found: ignore
+      - name: Commit patch report and queue
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/patch_state.json reports/
+          git diff --cached --quiet || git commit -m "data: detect patch ${{ steps.detect.outputs.patch_label }}"
+          git push
