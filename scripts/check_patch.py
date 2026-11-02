@@ -127,6 +127,11 @@ def main():
         print(f'Initial baseline set: {latest}. No old-patch comparisons yet.')
         return
     if previous == latest:
+        save_json(root / 'reports/check_status.json', {
+            'checked_at_utc': now, 'ddragon_version': latest,
+            'public_patch': patch_label(latest), 'static_version_changed': False,
+            'release_confirmation': 'pending_official_notes_and_regional_live_evidence',
+            'ratings_changed': False, 'source': VERSIONS})
         print(f'No Data Dragon release change: {latest}')
         return
 

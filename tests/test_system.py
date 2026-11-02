@@ -140,3 +140,12 @@ class IntegrationSafetyTests(unittest.TestCase):
         self.assertIsInstance(decision,int)
         self.assertEqual(db.execute('SELECT count(*) FROM validation_history').fetchone()[0],1)
         db.close()
+    def test_unchanged_patch_has_audit_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); (root/'data').mkdir()
+            state=root/'data/patch_state.json'; state.write_text('{"ddragon_version":"16.21.1"}')
+            original=state.read_bytes()
+            with patch('sys.argv',['check_patch','--root',tmp]),patch('scripts.check_patch.fetch_json',return_value=['16.21.1']): main()
+            report=json.loads((root/'reports/check_status.json').read_text())
+            self.assertFalse(report['ratings_changed'])
+            self.assertEqual(state.read_bytes(),original)
