@@ -1,0 +1,94 @@
+{
+  "checked_at_utc": "2026-11-04T07:33:36.458072+00:00",
+  "detected_ddragon_version": "16.22.1",
+  "previous_ddragon_version": "16.21.1",
+  "public_patch_label": "26.22",
+  "source": "https://ddragon.leagueoflegends.com/api/versions.json",
+  "review_status": "자동감지·인간검증필요",
+  "release_confirmation": "pending_official_notes_and_regional_live_evidence",
+  "official_notes_url": null,
+  "live_region": "KR",
+  "ratings_changed": false,
+  "warning": "Data Dragon 반영은 패치 출시와 시차가 날 수 있음. 정적 데이터의 문자열 변화만으로 게임 내 상성 7:3 등을 판정할 수 없음.",
+  "changed_champions": [
+    {
+      "id": "AurelionSol",
+      "name": "아우렐리온 솔",
+      "fields": [
+        "spells"
+      ]
+    },
+    {
+      "id": "Aurora",
+      "name": "오로라",
+      "fields": [
+        "spells"
+      ]
+    },
+    {
+      "id": "Kayle",
+      "name": "케일",
+      "fields": [
+        "spells"
+      ]
+    },
+    {
+      "id": "Mel",
+      "name": "멜",
+      "fields": [
+        "stats",
+        "spells"
+      ]
+    },
+    {
+      "id": "Orianna",
+      "name": "오리아나",
+      "fields": [
+        "spells"
+      ]
+    },
+    {
+      "id": "Thresh",
+      "name": "쓰레쉬",
+      "fields": [
+        "stats",
+        "spells"
+      ]
+    },
+    {
+      "id": "Viktor",
+      "name": "빅토르",
+      "fields": [
+        "stats"
+      ]
+    },
+    {
+      "id": "Zaahen",
+      "name": "자헨",
+      "fields": [
+        "spells"
+      ]
+    }
+  ],
+  "unmatched_changed_champion_names": [],
+  "changed_items": [
+    {
+      "id": "1086",
+      "name": "도란의 활",
+      "fields": [
+        "stats",
+        "description"
+      ]
+    },
+    {
+      "id": "2501",
+      "name": "지배자의 피갑옷",
+      "fields": [
+        "stats",
+        "description"
+      ]
+    }
+  ],
+  "changed_runes": [],
+  "affected_directed_matchups": 14468
+}
