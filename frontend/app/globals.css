@@ -97,3 +97,8 @@ p{line-height:1.55;margin:8px 0}
 .classification-note{font-size:13px;margin:-6px 0 20px}
 @media(min-width:768px) and (max-width:1279px){.enemy-search-grid{grid-template-columns:minmax(0,2fr) minmax(0,1fr) 160px}.counter-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:767px){.enemy-search-grid,.counter-results{grid-template-columns:1fr}.counter-results{gap:0}}
+
+/* Off-meta pick disclosure: no fabricated ratings */
+.offmeta-notice{padding:13px 15px;border:1px solid #777;border-radius:4px;background:#f7f7f7;margin:12px 0}
+.offmeta-notice strong{display:block;font-size:15px}
+.offmeta-notice p{font-size:14px;margin:6px 0 0;color:#424242}
