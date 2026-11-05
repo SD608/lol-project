@@ -17,6 +17,13 @@ type Props = {
   onChange: (name: string) => void;
 };
 
+const EXTRA_ALIASES: Record<string, string[]> = {
+  "케이틀린": ["케틀", "케틀린"],
+  "미스 포츈": ["미포"],
+  "트위스티드 페이트": ["트페"],
+  "아우렐리온 솔": ["아우솔"],
+};
+
 const JAMO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
 const normalize = (text: string) => text.toLocaleLowerCase().replace(/\s/g, "");
 function initials(text: string) {
@@ -27,7 +34,7 @@ function initials(text: string) {
 }
 function matches(item: SearchChampion, query: string) {
   const q = normalize(query);
-  return [item.name, item.initials || initials(item.name), item.riot_id || "", ...(item.aliases || [])]
+  return [item.name, item.initials || initials(item.name), item.riot_id || "", ...(item.aliases || []), ...(EXTRA_ALIASES[item.name] || [])]
     .some((candidate) => normalize(candidate).includes(q));
 }
 
