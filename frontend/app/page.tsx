@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import ChampionSearch from "./ChampionSearch";
 import PatchNotes from "./PatchNotes";
 import ExternalStatsLink from "./ExternalStatsLink";
+import SheetReference from "./SheetReference";
 
 type Champion = { name: string; riot_id?: string | null; aliases?: string[]; initials?: string | null; lanes?: string[] };
 type Lane = { lane: string; champion_count: number };
@@ -211,6 +212,7 @@ export default function Home() {
               {result.data_status === "no_verified_matchups" && <p className="muted">해당 라인의 승인된 상성 판정이 아직 없습니다. 데이터가 없다는 뜻이지, 카운터가 없다는 뜻은 아닙니다.</p>}
               {result.unknown_count > 0 && <p className="unknown-note">해당 라인의 선택 가능 후보 {result.total}명 중 {result.unknown_count}명은 검증된 상대 상성 정보가 없어 분류하지 않았습니다.</p>}
             </section>
+            <SheetReference enemy={result.opponent} lane={result.lane} />
             <ExternalStatsLink champion={champions.find((item) => item.name === opponent)} lane={result.lane} />
             <div className="counter-results">
               <CounterGroup title="하드카운터" picks={result.hard_counters} empty="검증된 하드카운터가 아직 없습니다." />
