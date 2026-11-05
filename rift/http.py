@@ -2,6 +2,8 @@
 import json
 import random
 import time
+import datetime as dt
+from email.utils import parsedate_to_datetime
 from contextlib import nullcontext
 from urllib.parse import urlparse
 from rift.limiter import RIOT_LIMITER
@@ -28,6 +30,13 @@ def fetch_json(url, headers=None, attempts=5, opener=urlopen, sleep=time.sleep):
             retry=exc.headers.get('Retry-After','') if exc.headers else ''
             if retry.isdigit():
                 delay=max(delay,int(retry))
+            elif retry:
+                try:
+                    delay=max(delay,(parsedate_to_datetime(retry)-dt.datetime.now(dt.timezone.utc)).total_seconds())
+                except (ValueError,TypeError): pass
+            if riot and exc.code==429:
+                with RIOT_LIMITER.lock:
+                    RIOT_LIMITER.blocked=max(RIOT_LIMITER.blocked,RIOT_LIMITER.clock()+delay)
         except (URLError,TimeoutError,OSError,ValueError):
             delay=2**attempt+random.random()
         if attempt+1<attempts:

@@ -37,3 +37,23 @@ class Stage2(unittest.TestCase):
         limiter.wait();limiter.wait();self.assertGreaterEqual(sleeps[0],1.3)
         limiter.observe({'X-App-Rate-Limit':'2:10','X-App-Rate-Limit-Count':'2:10'})
         limiter.wait();self.assertGreaterEqual(sleeps[-1],10)
+    def test_timeout_and_bad_json_retries(self):
+        import io
+        from rift.http import fetch_json,FetchError
+        for opener in (lambda *a,**k: (_ for _ in ()).throw(TimeoutError()),lambda *a,**k:io.StringIO('{')):
+            waits=[]
+            with self.assertRaises(FetchError): fetch_json('https://example.org',opener=opener,attempts=3,sleep=waits.append)
+            self.assertEqual(len(waits),2)
+    def test_missing_key_and_data_do_not_insert(self):
+        import os
+        from unittest.mock import patch
+        from rift.database import connect
+        from rift.matches import collect
+        db=connect(':memory:')
+        with patch.dict(os.environ,{},clear=True):
+            with self.assertRaises(RuntimeError): collect(db,'KR_1','KR','UNSPECIFIED')
+        with patch.dict(os.environ,{'RIOT_API_KEY':'dummy'}):
+            with self.assertRaises((ValueError,KeyError)):
+                collect(db,'KR_1','KR','UNSPECIFIED',lambda *a,**k:{'metadata':{'matchId':'KR_1'},'info':{}})
+        self.assertEqual(db.execute('SELECT count(*) FROM matches').fetchone()[0],0)
+        db.close()

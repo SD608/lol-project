@@ -1,6 +1,8 @@
 """Official HTML evidence collector; editorial changes are review candidates."""
 import hashlib
 import re
+import time
+from urllib.error import HTTPError
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
@@ -21,11 +23,17 @@ class Article(HTMLParser):
 def fetch_text(url):
     parsed=urlparse(url)
     if parsed.scheme!='https' or parsed.hostname!='www.leagueoflegends.com': raise ValueError('official host required')
-    try:
-        with urlopen(Request(url,headers={'User-Agent':'RiftMatchupMonitor/0.3'}),timeout=30) as response:
-            if urlparse(response.url).hostname!='www.leagueoflegends.com': raise FetchError('unexpected redirect')
-            return response.read(8_000_000).decode('utf-8')
-    except (OSError,TimeoutError): raise FetchError('official source unavailable') from None
+    for attempt in range(4):
+        try:
+            with urlopen(Request(url,headers={'User-Agent':'Mozilla/5.0 (compatible; RiftMatchupMonitor/0.3)'}),timeout=30) as response:
+                if urlparse(response.url).hostname!='www.leagueoflegends.com': raise FetchError('unexpected redirect')
+                return response.read(8_000_000).decode('utf-8')
+        except HTTPError as exc:
+            if exc.code!=429 and not 500<=exc.code<600:
+                raise FetchError(f'official source HTTP {exc.code}') from None
+        except (OSError,TimeoutError): pass
+        if attempt<3: time.sleep(2**attempt)
+    raise FetchError('official source retries exhausted') from None
 
 def parse_notes(html, patch, champion_names):
     parser=Article(); parser.feed(html)
