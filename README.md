@@ -124,3 +124,13 @@ python scripts/validate_sheets_mapping.py
 - **Verified by actual PostgreSQL SQL:** 173 champions / 266 champion-lane registrations / 14,468 directional matchups; missing foreign keys 0, duplicate pairs 0, self-matchups 0, missing reverse pairs 0. Five lane counts: top 65, jungle 56, mid 62, bot 35, support 48.
 - Patch/event evidence, matchup statistics, decisions and validation history are separate append-only models; the **actual match statistics and matchup ratings have not been collected or asserted**. Missing ratings are not 5:5.
 - Not yet done: real FastAPI/PostgreSQL integration, privileged backend authorization integration tests, Next.js responsive UI, deployment, and API security/production load tests. Schema-only and seed validation must not be confused with end-to-end deployment.
+
+
+## PICKOU 4.1 — 라이브 최소권한 DB 역할 적용 (2026-11-05)
+
+- 적용 대상: PICKOU `yspqfkcexibucnwvxdmw` 한정. SQL migration: `20261105020903_pickou_api_reader_select_only_rls`.
+- `pickou_api_reader` LOGIN 역할 생성, 슈퍼유저/BYPASSRLS/CREATE 권한 없음. 인증 비밀번호는 **NULL** (미설정). 필요한 7개 테이블에 SELECT만, 각 테이블에 역할 전용 SELECT RLS 정책. 7개 나머지 테이블 접근 없음. 브라우저 `anon`/`authenticated` 사용 권한 없음.
+- 실제 Supabase SQL 카탈로그 검증: 14 tables, 173/266/14,468, 7개 역할 전용 정책, INSERT/UPDATE/DELETE 0개. 이력/기존 데이터 변경 없음.
+- 실제 역할 전환 SQL (FastAPI 아님)에서 173/266/14,468, 탑 우르곳 상대 64, 페이지 10개, 패치 0개 SELECT 검증. INSERT/UPDATE/DELETE는 실제 실행 없이 EXPLAIN 권한 거부 확인. 재현용 `database/tests/verify_pickou_reader_permissions.sql`.
+- 테스트 중 권한 변경은 ROLLBACK. 관리자의 기존 역할 생성자 멤버십은 SET=false/INHERIT=false, 추가 SET 권한 유지되지 않음.
+- **실제 FastAPI 로그인/연결은 미완료**: 비밀번호와 backend-only 비밀 저장소가 없으며 공개 저장소에 비밀값을 기록하지 않음. PR #2는 Draft 유지.
