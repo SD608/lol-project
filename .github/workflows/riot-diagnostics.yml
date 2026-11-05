@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Offline diagnostic safety tests
-        run: python -m unittest tests.test_riot_diagnostics -v
+        run: python -m unittest discover -s tests -p 'test_riot_diagnostics.py' -v
       - name: Probe Riot endpoints (status codes only)
         env:
           RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
