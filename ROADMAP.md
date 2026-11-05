@@ -68,6 +68,32 @@ KR League-V4 → PUUID 기반 Match-V5 경기 ID 탐색 → 중복 제거 → �
 최종 코드 검증: 54개 테스트 Actions 성공 https://github.com/SD608/lol-project/actions/runs/41946190060 . 공식 패치 감지 회귀 성공 https://github.com/SD608/lol-project/actions/runs/41946190040 . KR pilot https://github.com/SD608/lol-project/actions/runs/41946190139 는 RIOT_API_KEY Secret 미설정으로 실패했고 오류 보고서 아티팩트 업로드는 성공했습니다. 실제 API 요청·경기·승인 매치업은 각각 0입니다. 실행 요약은 reports/stage3_execution.json 및 .md에 기록. 외부 인증이 준비되기 전 실제 표본 100건과 5개 통계 예시는 미완료로 유지합니다.
 
 
+## PICKOU Supabase PostgreSQL — applied 2026-11-05
+
+- **Target only:** Supabase project `PICKOU` (`yspqfkcexibucnwvxdmw`, Tokyo). Existing SD Supabase projects, SQLite, Google Sheets: **not modified**.
+- Database schema: private `pickou` (14 tables), 21 foreign-key constraints; `anon` and `authenticated` have no schema USAGE, no table grants. All 14 tables have RLS enabled (no browser-facing policies). FastAPI must use separately authorized server-side DB access; never expose service keys in Next.js.
+- Applied migration records: `20261105013751_pickou_foundation_v1_with_immutable_import_ledger` and `pickou_enable_rls_and_fk_indexes`. SQL copies in `database/migrations/`; an exact-value roster seed SQL archive is also saved there (seed executed through SQL, not registered as DDL migration).
+- Input: `data/lane_champions.json` Git blob `4c0e31de879718a42e4a676914dcb7996a8f1f3f`. The source snapshot and import ledger preserve origin/revision and are append-only.
+- **Verified by actual PostgreSQL SQL:** 173 champions / 266 champion-lane registrations / 14,468 directional matchups; missing foreign keys 0, duplicate pairs 0, self-matchups 0, missing reverse pairs 0. Five lane counts: top 65, jungle 56, mid 62, bot 35, support 48.
+- Patch/event evidence, matchup statistics, decisions and validation history are separate append-only models; the **actual match statistics and matchup ratings have not been collected or asserted**. Missing ratings are not 5:5.
+- Not yet done: real FastAPI/PostgreSQL integration, privileged backend authorization integration tests, Next.js responsive UI, deployment, and API security/production load tests. Schema-only and seed validation must not be confused with end-to-end deployment.
+
+### Next delivery milestones
+1. FastAPI async/pooled DB connection plus minimal read-only champion/lane/matchup API, with server-only credentials.
+2. API contract and test suite covering 173/266/14,468, reverse pairs and forbidden browser DB access.
+3. Next.js responsive views for mobile/tablet/desktop; treat unreviewed matchups as unknown.
+4. GitHub Actions test/deploy stages and staged production smoke testing.
+
+
+## PICKOU 4.1 — 라이브 최소권한 DB 역할 적용 (2026-11-05)
+
+- 적용 대상: PICKOU `yspqfkcexibucnwvxdmw` 한정. SQL migration: `20261105020903_pickou_api_reader_select_only_rls`.
+- `pickou_api_reader` LOGIN 역할 생성, 슈퍼유저/BYPASSRLS/CREATE 권한 없음. 인증 비밀번호는 **NULL** (미설정). 필요한 7개 테이블에 SELECT만, 각 테이블에 역할 전용 SELECT RLS 정책. 7개 나머지 테이블 접근 없음. 브라우저 `anon`/`authenticated` 사용 권한 없음.
+- 실제 Supabase SQL 카탈로그 검증: 14 tables, 173/266/14,468, 7개 역할 전용 정책, INSERT/UPDATE/DELETE 0개. 이력/기존 데이터 변경 없음.
+- 실제 역할 전환 SQL (FastAPI 아님)에서 173/266/14,468, 탑 우르곳 상대 64, 페이지 10개, 패치 0개 SELECT 검증. INSERT/UPDATE/DELETE는 실제 실행 없이 EXPLAIN 권한 거부 확인. 재현용 `database/tests/verify_pickou_reader_permissions.sql`.
+- 테스트 중 권한 변경은 ROLLBACK. 관리자의 기존 역할 생성자 멤버십은 SET=false/INHERIT=false, 추가 SET 권한 유지되지 않음.
+- **실제 FastAPI 로그인/연결은 미완료**: 비밀번호와 backend-only 비밀 저장소가 없으며 공개 저장소에 비밀값을 기록하지 않음. PR #2는 Draft 유지.
+
 ## 4단계 FastAPI 백엔드 (2026-11-05)
 
 - 구현: 별도 `backend` 앱, GET 7종(health/champions/champion detail/lanes/matchups/matchup detail/patches), asyncpg 풀, 503 DB 장애 처리, 파라미터 바인딩, 검색/페이지네이션, 제한 CORS, OpenAPI, Dockerfile, `.env.example`, 계약 테스트 및 CI.
@@ -93,3 +119,10 @@ KR League-V4 → PUUID 기반 Match-V5 경기 ID 탐색 → 중복 제거 → �
 - 실제 역할 SET SQL로 173/266/14,468, 우르곳 탑 64, LIMIT 10, 패치 빈 목록 읽기 및 EXPLAIN DML 권한 거부 검증. 이는 앱 외부의 **실제 PostgreSQL** 테스트다.
 - `tests/test_backend_live.py`에 FastAPI 전체 173명 조회, ID 오류, 빈 패치, 라인·상성·접속 역할 권한 검사를 보강. DB 인증 정보 미설정이면 테스트는 **skipped** (미통과).
 - role password NULL, backend `DATABASE_URL` 없음. 외부 FastAPI→Supabase 실제 연결 **미실행**. 보안 운영 환경에서 비밀값 등록 후 테스트 필요. PR #2는 Draft 및 미완료 유지.
+
+
+## 4.1 로컬 실DB 연동 실증 (2026-11-05)
+
+- 사용자 Windows 환경에서 `pickou_api_reader`로 TLS 연결 및 173/266/14,468 조회에 성공함. `GET /api/v1/health`에서 DB 상태 `ok`, 건수 173/266/14,468을 실제 확인함.
+- 위 내용은 로컬 검증 보고이며 GitHub Actions 라이브 DB 자격 증명 테스트가 통과했다는 뜻은 아님. DB 로그인 비밀번호는 공개 저장소/CI에 올리지 않음.
+- GitHub 병합과 실제 런타임/수집기 배포는 별도 작업으로 관리함.
