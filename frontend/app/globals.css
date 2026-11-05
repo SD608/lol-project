@@ -175,3 +175,14 @@ p{line-height:1.55;margin:8px 0}
 .patch-impact-pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin:16px 0}
 .patch-impact-footnote{font-size:12px;margin-top:18px}
 @media(max-width:767px){.patch-impact-panel{padding:12px}.patch-impact-row{grid-template-columns:44px minmax(0,1fr);gap:6px}.patch-impact-row span:nth-child(3),.patch-impact-row span:nth-child(4){grid-column:2}.patch-impact-pagination{gap:9px}}
+
+/* Champion autocomplete: ranked matches and actual registered lane chips */
+.champion-option{align-items:flex-start}
+.champion-option-primary{display:flex;flex-direction:column;gap:5px;min-width:0}
+.champion-option-primary strong{font-size:14px;overflow-wrap:anywhere}
+.champion-option-primary small{font-size:11px;color:#666}
+.champion-lane-tags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:58%}
+.champion-lane-tag{display:inline-block;padding:3px 5px;border:1px solid #d0d0d0;border-radius:3px;font-size:11px;color:#555;white-space:nowrap}
+.champion-lane-tag.is-selected{border-color:#444;color:#111;font-weight:700;background:#f3f3f3}
+.champion-offmeta-tag{padding:3px 5px;border:1px dashed #777;border-radius:3px;color:#555;font-size:11px;white-space:nowrap}
+@media(max-width:767px){.champion-lane-tags{max-width:65%}.champion-option{gap:5px;padding:10px 8px}}
