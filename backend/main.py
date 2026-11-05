@@ -1,5 +1,6 @@
 """PICKOU v1 read-only API. The API never creates, updates or deletes DB rows."""
 import asyncio
+import binascii
 import base64
 import json
 import os
@@ -38,7 +39,7 @@ def parse_matchup_id(value: str) -> tuple[str, str, str]:
         if matchup_id(*obj) != value:
             raise ValueError("noncanonical encoding")
         return lane, champ, opp
-    except (ValueError, UnicodeError, TypeError, __import__('binascii').Error):
+    except (ValueError, UnicodeError, TypeError, binascii.Error):
         raise HTTPException(422, "Invalid matchup ID") from None
 
 
@@ -189,7 +190,7 @@ async def matchup_detail(id: str, request: Request, patch: str | None = None,
           FROM pickou.matchup_decisions WHERE patch=$1 AND lane=$2 AND champion=$3 AND opponent=$4 AND region=$5 AND tier=$6
           ORDER BY created_at DESC,id DESC LIMIT 1""", *key)
     if decision:
-        result["decision"] = decision
+        result["decision"] = {**decision, "rating": decision["rating"] if decision["status"] == "manual_approved" else None}
         history = await fetch(request, "SELECT event,evidence,created_at FROM pickou.validation_history WHERE decision_id=$1 ORDER BY created_at,id", decision["id"])
         result["validation_history"] = [dict(r) for r in history]
         if decision["status"] == "manual_approved" and decision["rating"] is not None:
