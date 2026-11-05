@@ -1,0 +1,54 @@
+{
+  "spreadsheet_id": "1uitjfV_owbxUrPZRZm-Q0KdarZaiSQFTGyG2IZjEVcU",
+  "read_only": true,
+  "observed_at": "2026-11-05T00:57:15.517Z",
+  "lanes": {
+    "탑": {
+      "sheetId": 700001,
+      "rows": 4160,
+      "expected": 4160,
+      "missing": 0,
+      "extra": 0,
+      "issues": [],
+      "source_rows_digest": "80d89bdec81a91eb686abadbea58e46db2f77cf3c5b070e98fbcea7139c316bc"
+    },
+    "정글": {
+      "sheetId": 700002,
+      "rows": 3080,
+      "expected": 3080,
+      "missing": 0,
+      "extra": 0,
+      "issues": [],
+      "source_rows_digest": "8ee53d8d7ec60a02c954094497ea2bb908c13dc755b790f06a31f4027de16785"
+    },
+    "미드": {
+      "sheetId": 700003,
+      "rows": 3782,
+      "expected": 3782,
+      "missing": 0,
+      "extra": 0,
+      "issues": [],
+      "source_rows_digest": "33e8ab6d2fa44707bb59858eceaa4820cf52d837e7c62de1445458e6d4b4c7cd"
+    },
+    "바텀": {
+      "sheetId": 700004,
+      "rows": 1190,
+      "expected": 1190,
+      "missing": 0,
+      "extra": 0,
+      "issues": [],
+      "source_rows_digest": "058c5556dd46397e538373828e056911c28b0aa2087a924f7090f3a510475440"
+    },
+    "서폿": {
+      "sheetId": 700005,
+      "rows": 2256,
+      "expected": 2256,
+      "missing": 0,
+      "extra": 0,
+      "issues": [],
+      "source_rows_digest": "09ae62376893773d1af3f9ffe030725f684c9e99b17f1ccb70703d212215b046"
+    }
+  },
+  "rows": 14468,
+  "valid": true
+}
