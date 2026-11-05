@@ -1,0 +1,36 @@
+name: Collect explicit Riot matches
+on:
+  workflow_dispatch:
+    inputs:
+      match_ids:
+        description: Space separated KR match IDs
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: riot-api-key-worker
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Collect with secret only
+        env:
+          RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
+          MATCH_IDS: ${{ inputs.match_ids }}
+        run: |
+          python - <<'PY'
+          import os, re, subprocess, sys
+          if not os.environ.get('RIOT_API_KEY'): sys.exit('RIOT_API_KEY secret missing; no collection performed')
+          ids=os.environ['MATCH_IDS'].split()
+          if not ids or any(not re.fullmatch(r'KR_\d+', x) for x in ids): sys.exit('Invalid match IDs')
+          subprocess.run([sys.executable,'scripts/collect_matches.py',*ids],check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sanitized-match-database
+          path: data/rift.sqlite3

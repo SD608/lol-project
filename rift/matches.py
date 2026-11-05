@@ -18,6 +18,7 @@ def collect(db, match_id, region, tier, fetch=fetch_json):
     match=fetch(base,headers=headers); timeline=fetch(base+'/timeline',headers=headers)
     if match['metadata']['matchId']!=match_id or timeline['metadata']['matchId']!=match_id:
         raise ValueError('mismatched response identity')
+    if not isinstance(timeline.get('info',{}).get('frames'),list): raise ValueError('missing timeline frames')
     info=match['info']
     if info.get('queueId')!=420 or info.get('mapId')!=11: raise ValueError('ranked solo Summoners Rift required')
     frames={}
