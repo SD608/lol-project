@@ -50,3 +50,20 @@
 2026-11-05 KST: 실제 공식 목록 탐색(official_listing)과 26.22 본문 분석 성공. 수집·통합검사·원격 보고서 저장 전체 성공: https://github.com/SD608/lol-project/actions/runs/41943529719 . 36개 테스트 성공: https://github.com/SD608/lol-project/actions/runs/41943529723 . 실제 페이지에서 한 patch-change-block 안에 아이템 제목이 두 개 있는 사례를 발견해 제목별 스트림 파싱으로 수정하고 회귀 테스트 추가. 신규 테스트 8개이며 기존 28개 유지. 임시 HTML 점검 workflow/script는 제거.
 
 협곡 실제 목록: 아우렐리온 솔/코르키/케일/로크/마오카이/멜/나피리/럼블/쉔/스몰더/쓰레쉬/빅토르/야스오/자헨. 아이템: 도란의 활/지배자의 피갑옷. 룬 블록 없음. 출처: https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-22-notes . 첫 수집 기준선을 저장했으며 실제 핫픽스는 미확인. KR 공식 적용 완료 근거 자동 수집과 의미적 편집 판별, Riot 키를 이용한 실제 경기 수집은 남아 있음. 이전 404 실패 기록/패치 이력은 보존하고 최신 성공 기록으로 덮어 숨기지 않음.
+
+
+## PICKOU Supabase PostgreSQL — applied 2026-11-05
+
+- **Target only:** Supabase project `PICKOU` (`yspqfkcexibucnwvxdmw`, Tokyo). Existing SD Supabase projects, SQLite, Google Sheets: **not modified**.
+- Database schema: private `pickou` (14 tables), 21 foreign-key constraints; `anon` and `authenticated` have no schema USAGE, no table grants. All 14 tables have RLS enabled (no browser-facing policies). FastAPI must use separately authorized server-side DB access; never expose service keys in Next.js.
+- Applied migration records: `20261105013751_pickou_foundation_v1_with_immutable_import_ledger` and `pickou_enable_rls_and_fk_indexes`. SQL copies in `database/migrations/`; an exact-value roster seed SQL archive is also saved there (seed executed through SQL, not registered as DDL migration).
+- Input: `data/lane_champions.json` Git blob `4c0e31de879718a42e4a676914dcb7996a8f1f3f`. The source snapshot and import ledger preserve origin/revision and are append-only.
+- **Verified by actual PostgreSQL SQL:** 173 champions / 266 champion-lane registrations / 14,468 directional matchups; missing foreign keys 0, duplicate pairs 0, self-matchups 0, missing reverse pairs 0. Five lane counts: top 65, jungle 56, mid 62, bot 35, support 48.
+- Patch/event evidence, matchup statistics, decisions and validation history are separate append-only models; the **actual match statistics and matchup ratings have not been collected or asserted**. Missing ratings are not 5:5.
+- Not yet done: real FastAPI/PostgreSQL integration, privileged backend authorization integration tests, Next.js responsive UI, deployment, and API security/production load tests. Schema-only and seed validation must not be confused with end-to-end deployment.
+
+### Next delivery milestones
+1. FastAPI async/pooled DB connection plus minimal read-only champion/lane/matchup API, with server-only credentials.
+2. API contract and test suite covering 173/266/14,468, reverse pairs and forbidden browser DB access.
+3. Next.js responsive views for mobile/tablet/desktop; treat unreviewed matchups as unknown.
+4. GitHub Actions test/deploy stages and staged production smoke testing.
