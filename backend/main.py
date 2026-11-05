@@ -6,7 +6,6 @@ import json
 import os
 import re
 from contextlib import asynccontextmanager
-from urllib.parse import unquote
 
 import asyncpg
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -67,12 +66,31 @@ async def lifespan(app: FastAPI):
     app.state.pool = None
     if url:
         # Do not log credentials; fail closed if DB connection is unavailable.
-        app.state.pool = await asyncpg.create_pool(
+        pool = await asyncpg.create_pool(
             dsn=url, min_size=int(os.getenv("DB_POOL_MIN", "1")),
             max_size=int(os.getenv("DB_POOL_MAX", "5")),
             timeout=float(os.getenv("DB_TIMEOUT_SECONDS", "5")),
             server_settings={"default_transaction_read_only": "on", "statement_timeout": "5000"},
         )
+        try:
+            async with pool.acquire() as conn:
+                # Fail closed if a high-privilege or unexpected credential is configured.
+                role = await conn.fetchrow("""
+                    SELECT current_user AS username,
+                      has_schema_privilege(current_user,'pickou','USAGE') AS schema_usage,
+                      has_table_privilege(current_user,'pickou.champions','SELECT') AS can_read,
+                      has_table_privilege(current_user,'pickou.champions','INSERT') AS can_insert,
+                      has_table_privilege(current_user,'pickou.champions','UPDATE') AS can_update,
+                      has_table_privilege(current_user,'pickou.champions','DELETE') AS can_delete
+                """)
+                if (role["username"] != "pickou_api_reader"
+                    or not role["schema_usage"] or not role["can_read"]
+                    or role["can_insert"] or role["can_update"] or role["can_delete"]):
+                    raise RuntimeError("Unsafe database role; expected read-only pickou_api_reader")
+            app.state.pool = pool
+        except BaseException:
+            await pool.close()
+            raise
     try:
         yield
     finally:
