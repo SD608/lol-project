@@ -134,7 +134,7 @@ export default function ChampionSearch({ label, value, items, selectedLane, disa
         }
       }}
     />
-    {open && !disabled && <div className="champion-options" id={id + "-list" role="listbox" aria-label={label + " 검색 결과"}>
+    {open && !disabled && <div className="champion-options" id={id + "-list"} role="listbox" aria-label={label + " 검색 결과"}>
       {options.length ? options.map(({ item, isRegistered }, i) => <button
         type="button"
         role="option"
