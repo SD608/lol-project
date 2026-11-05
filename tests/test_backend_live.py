@@ -54,19 +54,25 @@ class LivePickouReadTests(unittest.TestCase):
             self.assertIsNone(detail.json()["rating"])
 
     def test_no_database_write_privileges(self):
-        # The backend SQL pool must be a dedicated reader, not a superuser.
         import asyncio
+        import asyncpg
+
         async def check():
-            async with app.state.pool.acquire() as con:
-                return await con.fetchrow("""SELECT current_user AS username,
+            conn = await asyncpg.connect(os.environ["DATABASE_URL"])
+            try:
+                return await conn.fetchrow("""SELECT current_user AS username,
                     has_table_privilege(current_user, 'pickou.champions', 'INSERT') AS can_insert,
                     has_table_privilege(current_user, 'pickou.champions', 'UPDATE') AS can_update,
                     has_table_privilege(current_user, 'pickou.champions', 'DELETE') AS can_delete,
                     has_schema_privilege('anon','pickou','USAGE') AS anon_usage,
                     has_schema_privilege('authenticated','pickou','USAGE') AS auth_usage""")
-        # TestClient's event loop is in its portal: avoid accessing its asyncpg pool from another loop.
-        # Use a synchronous API response instead for restricted role verification via an operator SQL check.
-        self.skipTest("Reader role grants checked independently via Supabase SQL; do not cross event loops")
+            finally:
+                await conn.close()
+
+        role = asyncio.run(check())
+        self.assertNotIn(role["username"], ("postgres", "supabase_admin"))
+        for col in ("can_insert", "can_update", "can_delete", "anon_usage", "auth_usage"):
+            self.assertFalse(role[col], col)
 
 
 if __name__ == "__main__":
