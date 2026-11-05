@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import ChampionSearch from "./ChampionSearch";
 import PatchNotes from "./PatchNotes";
+import ExternalStatsLink from "./ExternalStatsLink";
 
 type Champion = { name: string; riot_id?: string | null; aliases?: string[]; initials?: string | null; lanes?: string[] };
 type Lane = { lane: string; champion_count: number };
@@ -193,6 +194,7 @@ export default function Home() {
               {favorites.some((x) => x.opponent === opponent && x.lane === lane) ? "★ 즐겨찾기 해제" : "☆ 이 픽 즐겨찾기"}
             </button>
           </div>}
+          {opponent && <ExternalStatsLink champion={champions.find((item) => item.name === opponent)} lane={lane} />}
           {searchError && <section className="box" role="alert"><p className="error-message">{searchError}</p><p className="muted">백엔드가 업데이트된 상태인지 확인해 주세요.</p></section>}
           {searching && <section className="box" aria-live="polite">카운터 근거를 조회하고 있습니다.</section>}
           {!searchError && !searching && !result && <section className="box empty-results">
