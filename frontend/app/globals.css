@@ -184,5 +184,4 @@ p{line-height:1.55;margin:8px 0}
 .champion-lane-tags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:58%}
 .champion-lane-tag{display:inline-block;padding:3px 5px;border:1px solid #d0d0d0;border-radius:3px;font-size:11px;color:#555;white-space:nowrap}
 .champion-lane-tag.is-selected{border-color:#444;color:#111;font-weight:700;background:#f3f3f3}
-.champion-offmeta-tag{padding:3px 5px;border:1px dashed #777;border-radius:3px;color:#555;font-size:11px;white-space:nowrap}
 @media(max-width:767px){.champion-lane-tags{max-width:65%}.champion-option{gap:5px;padding:10px 8px}}

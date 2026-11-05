@@ -135,7 +135,7 @@ export default function ChampionSearch({ label, value, items, selectedLane, disa
       }}
     />
     {open && !disabled && <div className="champion-options" id={id + "-list"} role="listbox" aria-label={label + " 검색 결과"}>
-      {options.length ? options.map(({ item, isRegistered }, i) => <button
+      {options.length ? options.map(({ item }, i) => <button
         type="button"
         role="option"
         aria-selected={i === highlight}
@@ -151,11 +151,8 @@ export default function ChampionSearch({ label, value, items, selectedLane, disa
         </span>
         <span className="champion-lane-tags">
           {item.lanes?.length ? item.lanes.map((lane) => <small key={lane} className={lane === selectedLane ? "champion-lane-tag is-selected" : "champion-lane-tag"}>{lane}</small>) : <small>등록 라인 없음</small>}
-          {selectedLane && !isRegistered && <small className="champion-offmeta-tag">{selectedLane} 비주류</small>}
         </span>
       </button>) : <div className="champion-empty">검색 결과가 없습니다. 다른 이름이나 초성으로 검색해 보세요.</div>}
     </div>}
-    {value && selectedLane && items.some((champ) => champ.name === value && champ.lanes && !champ.lanes.includes(selectedLane)) &&
-      <small className="champion-selection">선택한 챔피언은 {selectedLane} 등록 명단에 없어. 비주류 픽으로 조회할 수 있어.</small>}
   </div>;
 }
