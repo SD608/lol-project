@@ -13,6 +13,8 @@ type Counters = {
   hard_counters: Pick[]; counters: Pick[]; even: Pick[];
   unknown_count: number; total: number; note: string;
 };
+type Favorite = { lane: string; opponent: string };
+const FAVORITES_KEY = "pickou:favorites:v1";
 type Page = "홈" | "상성 조회" | "조합 분석" | "패치 노트" | "통계" | "즐겨찾기" | "설정";
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
@@ -57,6 +59,8 @@ export default function Home() {
   const [searchError, setSearchError] = useState("");
   const [result, setResult] = useState<Counters | null>(null);
   const [recent, setRecent] = useState<Array<{ lane: string; opponent: string }>>([]);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const [storageReady, setStorageReady] = useState(false);
   const requestSequence = useRef(0);
 
   useEffect(() => {
@@ -76,6 +80,45 @@ export default function Home() {
     });
     return () => { active = false; };
   }, []);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(window.localStorage.getItem(FAVORITES_KEY) || "[]");
+      if (Array.isArray(stored)) {
+        setFavorites(stored.filter((item): item is Favorite =>
+          !!item && typeof item.opponent === "string" && typeof item.lane === "string" &&
+          LANES.includes(item.lane) && item.opponent.length <= 100
+        ).slice(0, 50));
+      }
+    } catch {
+      // Browser storage can be unavailable; the current session still works.
+    }
+    setStorageReady(true);
+  }, []);
+
+  function saveFavorites(next: Favorite[]) {
+    setFavorites(next);
+    try {
+      window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+    } catch {
+      // Keep in-memory favorites when storage is restricted.
+    }
+  }
+
+  function toggleFavorite(target: Favorite) {
+    const exists = favorites.some((x) => x.opponent === target.opponent && x.lane === target.lane);
+    saveFavorites(exists
+      ? favorites.filter((x) => x.opponent !== target.opponent || x.lane !== target.lane)
+      : [target, ...favorites].slice(0, 50));
+  }
+
+  function openFavorite(target: Favorite) {
+    setPage("상성 조회");
+    setMenuOpen(false);
+    setOpponent(target.opponent);
+    setLane(target.lane);
+    void runSearch(target.opponent, target.lane);
+  }
 
   const canSearch = !!opponent && !!lane && !searching && !loadingOptions;
   function go(next: Page) { setPage(next); setMenuOpen(false); }
@@ -143,6 +186,12 @@ export default function Home() {
             </div>
             {optionsError && <p className="error-message" role="alert">챔피언 목록을 불러오지 못했습니다. {optionsError}</p>}
           </section>
+          {opponent && <div className="favorite-actions">
+            <button type="button" className="text-button favorite-button" onClick={() => toggleFavorite({ opponent, lane })}
+              aria-pressed={favorites.some((x) => x.opponent === opponent && x.lane === lane)}>
+              {favorites.some((x) => x.opponent === opponent && x.lane === lane) ? "★ 즐겨찾기 해제" : "☆ 이 픽 즐겨찾기"}
+            </button>
+          </div>}
           {searchError && <section className="box" role="alert"><p className="error-message">{searchError}</p><p className="muted">백엔드가 업데이트된 상태인지 확인해 주세요.</p></section>}
           {searching && <section className="box" aria-live="polite">카운터 근거를 조회하고 있습니다.</section>}
           {!searchError && !searching && !result && <section className="box empty-results">
@@ -173,7 +222,21 @@ export default function Home() {
               상대: {entry.opponent}<span>{entry.lane}</span>
             </button>)}</div> : <p className="muted">이번 세션에서 조회한 기록이 없습니다.</p>}
           </section>
-        </> : <section className="box placeholder">
+        </> : page === "즐겨찾기" ? <section className="box favorites-panel">
+          <h1>즐겨찾기</h1>
+          <p className="muted">자주 상대하는 챔피언과 라인을 저장해서 바로 다시 조회할 수 있어요.</p>
+          {!storageReady ? <p className="muted">저장된 목록을 불러오는 중…</p> :
+            favorites.length ? <div className="favorite-list">
+              {favorites.map((entry) => <div key={entry.lane + ":" + entry.opponent} className="favorite-row">
+                <button type="button" className="favorite-open" onClick={() => openFavorite(entry)}>
+                  <strong>{entry.opponent}</strong><span>{entry.lane} · 카운터 찾기</span>
+                </button>
+                <button type="button" className="text-button favorite-remove" aria-label={entry.opponent + " " + entry.lane + " 즐겨찾기 삭제"}
+                  onClick={() => toggleFavorite(entry)}>삭제</button>
+              </div>)}
+            </div> : <p className="muted">저장된 픽이 없어요. 상성 조회에서 상대 챔피언과 라인을 선택한 뒤 즐겨찾기에 추가해 보세요.</p>}
+          <p className="muted favorite-storage-note">즐겨찾기는 현재 브라우저에만 저장돼요. 다른 기기와 동기화되지 않으며, 브라우저 데이터를 삭제하면 사라질 수 있습니다.</p>
+        </section> : <section className="box placeholder">
           <h1>{page}</h1><p>이 메뉴는 다음 개발 단계에서 구현할 예정입니다.</p>
           <p className="muted">근거가 없는 분석 결과는 생성하지 않습니다.</p>
           <button className="text-button" onClick={() => go("상성 조회")}>카운터 찾기로 돌아가기</button>
