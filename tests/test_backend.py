@@ -44,6 +44,25 @@ class BackendContractTests(unittest.TestCase):
             with self.assertRaises(HTTPException):
                 parse_matchup_id(value)
 
+    def test_champion_list_includes_registered_lanes(self):
+        from unittest.mock import AsyncMock, patch
+        from backend import main as backend_main
+        with patch.object(backend_main, "fetch", new_callable=AsyncMock) as mocked:
+            mocked.return_value = [
+                {"name": "케이틀린", "riot_id": "Caitlyn", "aliases": ["케틀"],
+                 "initials": "ㅋㅇㅌㄹ", "image_url": None, "lanes": ["바텀"]},
+                {"name": "스몰더", "riot_id": "Smolder", "aliases": [],
+                 "initials": "ㅅㅁㄷ", "image_url": None, "lanes": ["미드", "바텀"]},
+            ]
+            response = self.client.get("/api/v1/champions", params={"q": "케틀"})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["total"], 1)
+        self.assertEqual(data["items"][0]["lanes"], ["바텀"])
+        self.assertEqual(data["items"][0]["name"], "케이틀린")
+        query = mocked.call_args.args[1]
+        self.assertIn("pickou.champion_lanes", query)
+
     def test_alias_and_initials(self):
         miss = champion_view({"name": "미스 포츈", "aliases": [], "initials": "", "riot_id": None, "image_url": None})
         self.assertTrue(match_search(miss, "미포"))
