@@ -116,6 +116,6 @@ export default function ChampionSearch({ label, value, items, disabled, onChange
       ><span>{item.name}</span>{item.riot_id && <small>{item.riot_id}</small>}</button>) :
         <div className="champion-empty">검색 결과가 없습니다.</div>}
     </div>}
-    {value && <span className="champion-selection">선택: {value}</span>}
+
   </div>;
 }
