@@ -1,0 +1,33 @@
+{
+  "official_url": "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-22-notes",
+  "discovery": {
+    "method": "official_listing",
+    "index_url": "https://www.leagueoflegends.com/ko-kr/news/game-updates/",
+    "attempt_errors": []
+  },
+  "live_collection": true,
+  "champions": [
+    "아우렐리온 솔",
+    "코르키",
+    "케일",
+    "로크",
+    "마오카이",
+    "멜",
+    "나피리",
+    "럼블",
+    "쉔",
+    "스몰더",
+    "쓰레쉬",
+    "빅토르",
+    "야스오",
+    "자헨"
+  ],
+  "items": [
+    "도란의 활",
+    "지배자의 피갑옷"
+  ],
+  "runes": [],
+  "digest": "c61e216077da4be0341c2696c8cf8cf21a61eb72af45e462cfdcca641083d813",
+  "KR_live_status": "pending",
+  "hotfix_status": "not_confirmed"
+}
