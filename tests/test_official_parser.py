@@ -32,3 +32,11 @@ class OfficialParser(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'missing change list'):parse_notes(document().replace('<li>피해량 50 ⇒ 60</li>',''),'26.22',[],strict=True)
     def test_wrong_document_patch_rejected(self):
         with self.assertRaises(ValueError):parse_notes(document().replace('26.22','26.21'),'26.22',[],strict=True)
+    def test_two_targets_in_one_block(self):
+        html=document().replace('<h2 id="patch-aram:-mayhem">','<div class="patch-change-block"><h3 class="change-title">지배자의 피갑옷</h3><ul><li>공격력 30 ⇒ 40</li></ul></div><h2 id="patch-aram:-mayhem">')
+        html=html.replace('</ul></div><div class="patch-change-block"><h3 class="change-title">지배자의 피갑옷','</ul><h3 class="change-title">지배자의 피갑옷')
+        self.assertEqual(parse_notes(html,'26.22',[],strict=True)['items'],['도란의 활','지배자의 피갑옷'])
+    def test_hotfix_content_changes_digest(self):
+        base=document();revision=base.replace('<h2 id="patch-champions">','<h2 id="patch-midpatch">추가 패치</h2><ul><li>가렌 피해량 10 ⇒ 12</li></ul><h2 id="patch-champions">')
+        a=parse_notes(base,'26.22',[],strict=True);b=parse_notes(revision,'26.22',[],strict=True)
+        self.assertNotEqual(a['digest'],b['digest']);self.assertTrue(b['hotfix_mentioned']);self.assertTrue(b['unmapped_changes'])

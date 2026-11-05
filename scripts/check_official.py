@@ -34,7 +34,7 @@ def check(root, patch, fetch=fetch_text, live_url=None, strict=False):
     changed=previous!=notes['digest']
     deps_path=root/'data/dependencies.json'
     deps=json.loads(deps_path.read_text()) if deps_path.exists() else {}
-    unknown=notes['parse_status']=='unknown'
+    unknown=notes['parse_status']=='unknown' or notes.get('unmapped_changes',False)
     queue=impact(lanes,notes['champions'],['official:unknown'] if notes['items_changed'] or unknown else [],['official:unknown'] if notes['runes_changed'] else [],deps) if changed else []
     for row in queue: row['패치']=patch
     report={'patch':patch,'notes_url':url,'discovery':discovery,'hotfix_status':'candidate' if previous and changed else 'none','editorial_status':'editorial_only' if not changed and previous_article and previous_article!=notes.get('article_digest') else 'unchanged_or_balance_candidate','live_url':live_url,'release_status':'confirmed' if live else 'pending','checked_at':dt.datetime.now(dt.timezone.utc).isoformat(),'content_digest':notes['digest'],'previous_digest':previous,'same_patch_revision':bool(previous and changed),'changed':changed,'ratings_changed':False,'notes':notes,'review_queue':queue}

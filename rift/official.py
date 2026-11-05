@@ -66,7 +66,7 @@ class Node:
 class DOM(HTMLParser):
     def __init__(self): super().__init__();self.root=Node();self.stack=[self.root]
     def handle_starttag(self,t,a):
-        n=Node(t,a); self.stack[-1].children.append(n)
+        n=Node(t,a); n.parent=self.stack[-1]; self.stack[-1].children.append(n)
         if t not in ('area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'): self.stack.append(n)
     def handle_startendtag(self,t,a): self.handle_starttag(t,a);self.handle_endtag(t)
     def handle_endtag(self,t):
@@ -115,27 +115,41 @@ def parse_notes(html, patch, champion_names, strict=False):
     if not any(re.search(r'(?<!\d)'+re.escape(patch)+r'(?!\d)',t) for t in titles): raise ValueError('article patch mismatch')
     records=[];other={};category=None;mode='summoners_rift';section='';recognized=False;errors=[]
     sections={'patch-champions':'champions','patch-items':'items','patch-runes':'runes'}
+    current=None; ability=''; hotfix_changes=[]
+    def finish():
+        if current:
+            if current['changes']: records.append(current)
+            else: errors.append('missing change list: '+current['name'])
     for node in article.walk():
         if node.tag=='h2':
+            finish(); current=None; ability=''
             section=node.attrs.get('id','');category=sections.get(section)
             label=node.text()
-            if re.search('aram|mayhem|아수라장|무작위 총력전',section+' '+label,re.I): mode='aram_mayhem'
+            if re.search('hotfix|mid.?patch|추가 패치|긴급 수정',section+' '+label,re.I): mode='summoners_rift';category='hotfix'
+            elif re.search('aram|mayhem|아수라장|무작위 총력전',section+' '+label,re.I): mode='aram_mayhem'
             elif re.search('classic|클래식',section+' '+label,re.I): mode='classic'
             elif category: mode='summoners_rift';recognized=True
             elif section: mode='other'
+            if label in ('챔피언','아이템','룬') and not category: errors.append('unrecognized section id: '+section)
             if mode!='summoners_rift': other.setdefault(mode,[]).append({'section':section,'heading':label})
-        if 'patch-change-block' not in node.attrs.get('class','').split(): continue
-        title=next((x for x in node.walk() if x.tag=='h3' and 'change-title' in x.attrs.get('class','').split()),None)
-        if not title: continue
-        details=[x.text() for x in node.walk() if x.tag=='li' and x.text()]
-        if mode!='summoners_rift' or not category:
-            other.setdefault(mode,[]).append({'name':title.text(),'changes':details});continue
-        if not details:
-            errors.append('missing change list: '+title.text());continue
-        records.append({'mode':mode,'category':category,'name':title.text(),'anchor':title.attrs.get('id'),'changes':details})
+        if node.tag=='h3' and 'change-title' in node.attrs.get('class','').split():
+            finish();current=None;ability=''
+            parent=getattr(node,'parent',None); inside=False
+            while parent:
+                if 'patch-change-block' in parent.attrs.get('class','').split(): inside=True;break
+                parent=getattr(parent,'parent',None)
+            if mode=='summoners_rift' and category and inside:
+                current={'mode':mode,'category':category,'name':node.text(),'anchor':node.attrs.get('id'),'changes':[]}
+        if node.tag=='h4': ability=node.text()
+        if node.tag=='li' and not any(x.tag=='li' for x in list(node.walk())[1:]) and node.text():
+            if mode!='summoners_rift': other.setdefault(mode,[]).append({'section':section,'change':node.text()})
+            elif current: current['changes'].append((ability+': ' if ability else '')+node.text())
+            elif category=='hotfix': hotfix_changes.append(node.text())
+    finish()
+    if hotfix_changes: records.append({'mode':'summoners_rift','category':'hotfix','name':'unmapped_hotfix','anchor':None,'changes':hotfix_changes})
     if not recognized or not records or errors: raise ValueError('structure_changed: '+('; '.join(errors) or 'no recognized balance blocks'))
     import json
     digest=hashlib.sha256(json.dumps(records,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
     article_digest=hashlib.sha256(article.text().encode()).hexdigest()
     grouped={k:[r for r in records if r['category']==k] for k in ('champions','items','runes')}
-    return {'digest':digest,'article_digest':article_digest,'text':article.text(),'sections':grouped,'changes':records,'champions':[r['name'] for r in grouped['champions']],'items':[r['name'] for r in grouped['items']],'runes':[r['name'] for r in grouped['runes']],'items_changed':bool(grouped['items']),'runes_changed':bool(grouped['runes']),'parse_status':'structured_candidates','other_modes':other,'hotfix_mentioned':bool(re.search(r'추가 패치|긴급 수정|hotfix|mid.?patch',' '.join(n.text() for n in article.walk() if n.tag in ('h2','h3')),re.I))}
+    return {'digest':digest,'article_digest':article_digest,'text':article.text(),'sections':grouped,'changes':records,'champions':[r['name'] for r in grouped['champions']],'items':[r['name'] for r in grouped['items']],'runes':[r['name'] for r in grouped['runes']],'unmapped_changes':any(r['category']=='hotfix' for r in records),'items_changed':bool(grouped['items']),'runes_changed':bool(grouped['runes']),'parse_status':'structured_candidates','other_modes':other,'hotfix_mentioned':bool(re.search(r'추가 패치|긴급 수정|hotfix|mid.?patch',' '.join(n.text() for n in article.walk() if n.tag in ('h2','h3')),re.I))}
