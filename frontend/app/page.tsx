@@ -194,7 +194,6 @@ export default function Home() {
               {favorites.some((x) => x.opponent === opponent && x.lane === lane) ? "★ 즐겨찾기 해제" : "☆ 이 픽 즐겨찾기"}
             </button>
           </div>}
-          {opponent && <ExternalStatsLink champion={champions.find((item) => item.name === opponent)} lane={lane} />}
           {searchError && <section className="box" role="alert"><p className="error-message">{searchError}</p><p className="muted">백엔드가 업데이트된 상태인지 확인해 주세요.</p></section>}
           {searching && <section className="box" aria-live="polite">카운터 근거를 조회하고 있습니다.</section>}
           {!searchError && !searching && !result && <section className="box empty-results">
@@ -212,6 +211,7 @@ export default function Home() {
               {result.data_status === "no_verified_matchups" && <p className="muted">해당 라인의 승인된 상성 판정이 아직 없습니다. 데이터가 없다는 뜻이지, 카운터가 없다는 뜻은 아닙니다.</p>}
               {result.unknown_count > 0 && <p className="unknown-note">해당 라인의 선택 가능 후보 {result.total}명 중 {result.unknown_count}명은 검증된 상대 상성 정보가 없어 분류하지 않았습니다.</p>}
             </section>
+            <ExternalStatsLink champion={champions.find((item) => item.name === opponent)} lane={result.lane} />
             <div className="counter-results">
               <CounterGroup title="하드카운터" picks={result.hard_counters} empty="검증된 하드카운터가 아직 없습니다." />
               <CounterGroup title="카운터" picks={result.counters} empty="검증된 카운터가 아직 없습니다." />
