@@ -39,7 +39,7 @@ export default function ChampionSearch({ label, value, items, disabled, onChange
   const input = useRef<HTMLInputElement>(null);
   const id = useId();
 
-  useEffect(() => { setQuery(value); }, [value]);
+  useEffect(() => { if (value) setQuery(value); }, [value]);
   useEffect(() => {
     const closeOutside = (event: PointerEvent) => {
       if (!root.current?.contains(event.target as Node)) setOpen(false);
