@@ -215,3 +215,64 @@ async def matchup_detail(id: str, request: Request, patch: str | None = None,
             result["rating"] = decision["rating"]
             result["status"] = "verified"
     return result
+
+
+@app.get("/api/v1/counters")
+async def counters(request: Request, lane: str = Query(...), opponent: str = Query(..., min_length=1, max_length=NAME_MAX),
+                   region: str = Query("KR", min_length=2, max_length=16),
+                   tier: str = Query("UNSPECIFIED", min_length=1, max_length=40)):
+    """Suggest picks against the selected opponent. Only human-approved patch-matching grades qualify."""
+    validate_pair(lane, opponent, None)
+    # Verify opponent belongs to this lane; invalid lane/champion combination is not a counter search.
+    exists = await one(request,
+        "SELECT champion FROM pickou.champion_lanes WHERE lane=$1 AND champion=$2", lane, opponent)
+    if exists is None:
+        raise HTTPException(404, "Opponent not registered in this lane")
+
+    patch = await one(request, """
+        SELECT patch FROM pickou.patches
+        WHERE release_status='confirmed' AND region=$1
+        ORDER BY confirmed_at DESC NULLS LAST, created_at DESC
+        LIMIT 1
+    """, region)
+
+    # All lane registrations are known. Ratings are intentionally missing without an approved
+    # decision for the selected region/tier/confirmed patch. Never infer 5:5 or invent win rates.
+    rows = await fetch(request, """
+        SELECT m.champion,
+               CASE WHEN d.status='manual_approved' AND d.rating IS NOT NULL
+                    THEN d.rating ELSE NULL END AS rating
+        FROM pickou.matchups AS m
+        LEFT JOIN LATERAL (
+            SELECT status, rating FROM pickou.matchup_decisions
+            WHERE patch=$3 AND region=$4 AND tier=$5
+              AND lane=m.lane AND champion=m.champion AND opponent=m.opponent
+            ORDER BY created_at DESC,id DESC LIMIT 1
+        ) AS d ON TRUE
+        WHERE m.lane=$1 AND m.opponent=$2
+        ORDER BY m.champion
+    """, lane, opponent, patch["patch"] if patch else None, region, tier)
+
+    hard = []
+    counter = []
+    even = []
+    unknown = []
+    for row in rows:
+        pick = {"champion": row["champion"], "rating": row["rating"]}
+        if row["rating"] in ("9:1", "8:2"):
+            hard.append(pick)
+        elif row["rating"] in ("7:3", "6:4"):
+            counter.append(pick)
+        elif row["rating"] == "5:5":
+            even.append(pick)
+        elif row["rating"] is None:
+            unknown.append({"champion": row["champion"]})
+    # Anything graded 4:6 or worse is deliberately excluded from counter suggestions.
+    return {
+        "lane": lane, "opponent": opponent,
+        "patch": patch["patch"] if patch else None,
+        "region": region, "tier": tier,
+        "hard_counters": hard, "counters": counter, "even": even,
+        "unknown_count": len(unknown), "total": len(rows),
+        "note": "Only manually approved ratings on the latest confirmed patch are recommendations. Other picks are not scored."
+    }
