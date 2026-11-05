@@ -51,6 +51,22 @@
 
 협곡 실제 목록: 아우렐리온 솔/코르키/케일/로크/마오카이/멜/나피리/럼블/쉔/스몰더/쓰레쉬/빅토르/야스오/자헨. 아이템: 도란의 활/지배자의 피갑옷. 룬 블록 없음. 출처: https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-22-notes . 첫 수집 기준선을 저장했으며 실제 핫픽스는 미확인. KR 공식 적용 완료 근거 자동 수집과 의미적 편집 판별, Riot 키를 이용한 실제 경기 수집은 남아 있음. 이전 404 실패 기록/패치 이력은 보존하고 최신 성공 기록으로 덮어 숨기지 않음.
 
+## PICKOU 3단계 — 경기 통계 기반
+
+KR League-V4 → PUUID 기반 Match-V5 경기 ID 탐색 → 중복 제거 → 기존 수집기/호출 제한기 → 역할·타임라인 품질 검증 → 지역/티어 코호트/패치별 방향성 통계 → JSON/Markdown·최대 5개 실제 예시로 연결했습니다. 이전 36개를 유지한 전체 54개 로컬 테스트가 통과했습니다. API HTTP 429/재시도 횟수를 비밀정보 없는 이벤트 카운터로 수집합니다.
+
+실제 Sheets 14,468개 행 대진과 5개 라인 헤더를 읽기 전용으로 대조해 전체 일치를 확인했습니다. 원본 행의 gzip 스냅샷은 로컬에만 보관하고 GitHub에는 원본 행 없는 검증 요약만 저장합니다. Actions는 원본 재검증 대신 저장된 요약만 확인합니다. 자동 승인 검토가 비공개 Sheets 원본의 GitHub 업로드를 거부했으므로 원본을 공개하지 않는 경로로 진행했습니다. 통계 업데이트 계획은 쓰기 비활성, 수동 승인과 새 셀 재조회 및 지역/티어/패치 목적지 추가 매핑을 요구합니다.
+
+로컬 RIOT_API_KEY 없음. 실제 로컬 수집 0, 검증·승인 매치업 0, 실제 통계 예시 없음. GitHub Secrets 존재 여부는 실제 pilot workflow에서 확인하며 키 값은 조회하지 않습니다. 키가 없을 때 오류 보고서(exit 2)를 반환하는 경로를 구현했습니다. 모의 경기의 숫자를 실제 수집 결과로 보고하지 않습니다.
+
+남은 제한: 현재 시드 랭크가 경기 당시 티어를 증명하지 않음, 자동 KR 적용 완료 근거 부족 시 pending/gameVersion별 분리, 모든 위치 기반 라인 스왑 검출 미지원, 평균 구간은 30개 이상 정규근사이고 표본의 독립성/시드 선택 편향이 남음, 분산 키 제한기와 영구 DB 복원은 미구현. 외부 API 인증이 준비되어야 실제 100경기 실증·실제 통계 5개 예시를 확인할 수 있음. 충분한 경기 수가 곧 충분한 개별 대진 표본은 아님.
+
+
+3단계 첫 원격 검증: 테스트 48개 성공 https://github.com/SD608/lol-project/actions/runs/41945914149 . 실제 pilot https://github.com/SD608/lol-project/actions/runs/41945914124 는 RIOT_API_KEY GitHub Secret 미설정으로 key_missing(exit 2). 실제 API 호출 0 / 수집 0 / 승인된 매치업 0 / 실제 예시 없음. 실패 결과 JSON·Markdown 아티팩트 업로드 성공. 추가 회귀 테스트로 반복 실행 시 같은 통계 스냅샷이 중복 저장되는 JSON 튜플/리스트 비교 문제를 발견해 신뢰구간 직렬화 형식을 통일했습니다.
+
+
+최종 코드 검증: 54개 테스트 Actions 성공 https://github.com/SD608/lol-project/actions/runs/41946190060 . 공식 패치 감지 회귀 성공 https://github.com/SD608/lol-project/actions/runs/41946190040 . KR pilot https://github.com/SD608/lol-project/actions/runs/41946190139 는 RIOT_API_KEY Secret 미설정으로 실패했고 오류 보고서 아티팩트 업로드는 성공했습니다. 실제 API 요청·경기·승인 매치업은 각각 0입니다. 실행 요약은 reports/stage3_execution.json 및 .md에 기록. 외부 인증이 준비되기 전 실제 표본 100건과 5개 통계 예시는 미완료로 유지합니다.
+
 
 ## PICKOU Supabase PostgreSQL — applied 2026-11-05
 

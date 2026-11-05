@@ -3,3 +3,6 @@ __pycache__/
 *.sqlite3
 .env
 credentials*.json
+
+# Private source snapshots stay local; publish aggregate validation summary only.
+data/read_only/*
