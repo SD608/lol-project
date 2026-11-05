@@ -81,3 +81,19 @@ p{line-height:1.55;margin:8px 0}
 .champion-option small{color:#666;overflow:hidden;text-overflow:ellipsis}
 .champion-empty{padding:14px 12px;color:#666}
 .champion-selection{font-size:12px;font-weight:400;color:#555}
+
+/* Enemy-first counter finder */
+.enemy-search-grid{grid-template-columns:minmax(0,2fr) minmax(0,1fr) 160px;align-items:end}
+.counter-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.counter-results .box{min-height:190px}
+.group-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.group-heading h2{margin:0}
+.group-heading span,.summary-lane{font-size:13px;font-weight:400;color:#666}
+.pick-list{display:flex;flex-direction:column;gap:8px}
+.pick-card{border:1px solid #b9b9b9;padding:11px 13px;border-radius:4px;display:flex;justify-content:space-between;gap:10px}
+.pick-card span{color:#555;font-variant-numeric:tabular-nums}
+.summary-box h2{margin-bottom:10px}
+.unknown-note{padding:12px 14px;background:#f4f4f4;border:1px solid #ddd;border-radius:4px}
+.classification-note{font-size:13px;margin:-6px 0 20px}
+@media(min-width:768px) and (max-width:1279px){.enemy-search-grid{grid-template-columns:minmax(0,2fr) minmax(0,1fr) 160px}.counter-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:767px){.enemy-search-grid,.counter-results{grid-template-columns:1fr}.counter-results{gap:0}}
