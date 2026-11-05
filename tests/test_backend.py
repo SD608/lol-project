@@ -19,18 +19,20 @@ class BackendContractTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         paths = response.json()["paths"]
         for route in ("/api/v1/health", "/api/v1/champions", "/api/v1/champions/{id}",
-                      "/api/v1/lanes", "/api/v1/matchups", "/api/v1/matchups/{id}", "/api/v1/patches"):
+                      "/api/v1/lanes", "/api/v1/matchups", "/api/v1/matchups/{id}", "/api/v1/patches", "/api/v1/counters"):
             self.assertIn(route, paths)
 
     def test_database_unavailable_returns_503(self):
         app.state.pool = None
-        for path in ("/api/v1/health", "/api/v1/champions", "/api/v1/lanes", "/api/v1/patches", "/api/v1/matchups"):
+        for path in ("/api/v1/health", "/api/v1/champions", "/api/v1/lanes", "/api/v1/patches", "/api/v1/matchups", "/api/v1/counters?lane=탑&opponent=우르곳"):
             self.assertEqual(self.client.get(path).status_code, 503)
 
     def test_query_bounds(self):
         self.assertEqual(self.client.get("/api/v1/matchups?limit=201").status_code, 422)
         self.assertEqual(self.client.get("/api/v1/champions?offset=-1").status_code, 422)
         self.assertEqual(self.client.get("/api/v1/matchups?lane=INVALID").status_code, 422)
+        self.assertEqual(self.client.get("/api/v1/counters?lane=INVALID&opponent=우르곳").status_code, 422)
+        self.assertEqual(self.client.get("/api/v1/counters?lane=탑").status_code, 422)
 
     def test_matchup_id_roundtrip(self):
         key = ("탑", "우르곳", "가렌")
