@@ -84,3 +84,12 @@ KR League-V4 → PUUID 기반 Match-V5 경기 ID 탐색 → 중복 제거 → �
 - **실제 PostgreSQL SQL 조회**는 Supabase 연결에서 별도 확인: 14 tables / 14 RLS / 21 FK / 9 immutable triggers / 173 champions / 266 lane registrations / 14,468 directional pairs / duplicate 0 / reverse missing 0. 현재 patches/statistics/decisions 각 0건. anon/authenticated schema USAGE false.
 - 위 SQL 실조회는 FastAPI 앱을 통과한 연결 검사가 아니다. 운영 reader 역할·RLS·비밀키가 마련된 후 tests/test_backend_live.py가 실제 API→DB를 시험하도록 구성했다. 해당 5개는 이번 CI에서 skipped다.
 - PR #1의 기존 main 충돌은 별도 merge commit으로 해결되어 GitHub mergeable=true, 리뷰 대기 상태. PR #2의 API 구현은 미배포.
+
+
+## PICKOU 4.1 — FastAPI 실DB 보안 사전검증 (2026-11-05)
+
+- PR #1 마이그레이션의 SELECT 전용 `pickou_api_reader` 역할 및 7개 RLS 정책이 실제 Supabase PICKOU `yspqfkcexibucnwvxdmw`에 적용됨. 기존 DB 원본 173/266/14,468 유지, 기타 SD 프로젝트·SQLite·Sheets 수정 없음.
+- 서버는 startup 시 `current_user=pickou_api_reader`이고 SELECT 가능/쓰기 권한 없음 확인 후에만 DB 풀을 수용하도록 보강.
+- 실제 역할 SET SQL로 173/266/14,468, 우르곳 탑 64, LIMIT 10, 패치 빈 목록 읽기 및 EXPLAIN DML 권한 거부 검증. 이는 앱 외부의 **실제 PostgreSQL** 테스트다.
+- `tests/test_backend_live.py`에 FastAPI 전체 173명 조회, ID 오류, 빈 패치, 라인·상성·접속 역할 권한 검사를 보강. DB 인증 정보 미설정이면 테스트는 **skipped** (미통과).
+- role password NULL, backend `DATABASE_URL` 없음. 외부 FastAPI→Supabase 실제 연결 **미실행**. 보안 운영 환경에서 비밀값 등록 후 테스트 필요. PR #2는 Draft 및 미완료 유지.
