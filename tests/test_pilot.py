@@ -127,3 +127,50 @@ class PilotTests(unittest.TestCase):
         (self.root/'reports').mkdir();report={'patch':'26.22','release_status':'pending','live_url':None}
         (self.root/'reports/official_latest.json').write_text(json.dumps(report))
         self.assertIsNone(live_context(self.root)['official_latest_live_patch'])
+    def test_invalid_roles_are_preserved_but_pilot_excludes_them(self):
+        class RoleClient(FakeClient):
+            def __call__(self,url,headers=None):
+                obj=super().__call__(url,headers)
+                if isinstance(obj,dict) and 'participants' in obj.get('info',{}):obj['info']['participants'][0]['teamPosition']='MIDDLE'
+                return obj
+        report=pilot(self.db,self.root,RoleClient(),target=2,origin='test_fixture')
+        self.assertEqual(report['role_flagged_matches'],2);self.assertEqual(report['valid_matches'],0)
+        self.assertEqual(report['matchups'],[]);self.assertEqual(self.db.execute('SELECT count(*) FROM matches').fetchone()[0],2)
+    def test_repeat_pilot_does_not_duplicate_statistic_samples(self):
+        first=pilot(self.db,self.root,FakeClient(),target=2,origin='test_fixture')
+        count=self.db.execute('SELECT count(*) FROM statistics').fetchone()[0]
+        second=pilot(self.db,self.root,FakeClient(),target=2,origin='test_fixture')
+        self.assertEqual(second['collected_matches'],0);self.assertGreaterEqual(second['duplicate_matches'],2)
+        self.assertEqual(self.db.execute('SELECT count(*) FROM statistics').fetchone()[0],count)
+        self.assertTrue(all(g['sample_size']==2 for g in second['matchups']))
+    def test_confirmed_patch_excludes_old_games_without_deletion(self):
+        import datetime as dt
+        (self.root/'data/patch_state.json').write_text('{"public_patch":"26.22"}')
+        (self.root/'reports').mkdir()
+        report={'patch':'26.22','release_status':'confirmed','live_url':'https://www.leagueoflegends.com/ko-kr/news/notices/complete/','checked_at':dt.datetime.now(dt.timezone.utc).isoformat()}
+        path=self.root/'reports/official_latest.json';path.write_text(json.dumps(report));before=path.read_bytes()
+        r=pilot(self.db,self.root,FakeClient(['16.21.1','16.22.1']),target=2,origin='test_fixture')
+        self.assertEqual(r['valid_matches'],1);self.assertEqual(r['errors']['other_patch_preserved_excluded_from_target'],1)
+        self.assertEqual(self.db.execute('SELECT count(*) FROM matches').fetchone()[0],2)
+        self.assertTrue(all(g['key'][0]=='26.22' for g in r['matchups']));self.assertEqual(path.read_bytes(),before)
+        report['live_url']='https://attacker.example';path.write_text(json.dumps(report))
+        self.assertIsNone(live_context(self.root)['official_latest_live_patch'])
+    def test_invalid_numeric_timeline_values_stay_missing(self):
+        match,timeline=fixture();timeline['info']['frames'][1]['participantFrames']['1']['totalGold']='bad'
+        collect(self.db,'KR_1','KR','UNKNOWN',fetch=lambda u,**k:timeline if u.endswith('/timeline') else match)
+        groups=summarize(self.db,{str(i):'C'+str(i) for i in range(1,11)})
+        group=next(g for g in groups if g['key'][2]=='C1');self.assertNotIn('gold_diff_15',group['metrics'])
+    def test_riot_503_and_date_retry_after_with_no_secret_logging(self):
+        import datetime as dt
+        from email.utils import format_datetime
+        from urllib.error import HTTPError
+        events=Counter();waits=[]
+        retry=format_datetime(dt.datetime.now(dt.timezone.utc)+dt.timedelta(seconds=20),usegmt=True)
+        def opener(*a,**k):raise HTTPError('private-url',503,SECRET,{'Retry-After':retry},None)
+        with self.assertRaises(FetchError) as ctx:fetch_json('https://example.org',opener=opener,attempts=2,sleep=waits.append,observer=lambda e:events.update([e]))
+        self.assertGreater(waits[0],10);self.assertEqual(events['http_503'],2);self.assertNotIn(SECRET,str(ctx.exception))
+    def test_report_has_explicit_zero_api_counters(self):
+        report=empty_report();report['status']='key_missing';save_report(self.root,report)
+        stored=json.loads((self.root/'reports/collection/latest.json').read_text())
+        self.assertEqual(stored['api_requests'],0);self.assertEqual(stored['api_error_count'],0);self.assertEqual(stored['api_limit_events'],0)
+        self.assertEqual(stored['unverified_reasons'],['no_actual_samples'])

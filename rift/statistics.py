@@ -39,7 +39,7 @@ def summarize(db, champion_names, match_ids=None):
     result=[]
     for key,rows in groups.items():
         wins=sum(r[1] for r in rows)
-        metrics={'game_win_rate':wins/len(rows),'game_win_rate_ci95':wilson(wins,len(rows)),'lane_rating':None}
+        metrics={'game_win_rate':wins/len(rows),'game_win_rate_ci95':list(wilson(wins,len(rows))),'lane_rating':None}
         for name in {k for _,_,r in rows for k in r}:
             values=[r[name] for _,_,r in rows if name in r]
             mean=sum(values)/len(values)

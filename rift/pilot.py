@@ -12,7 +12,7 @@ from rift.statistics import summarize
 
 
 def empty_report():
-    return {'project':'PICKOU','observed_at':dt.datetime.now(dt.timezone.utc).isoformat(),'status':'not_started','data_origin':'riot_api','actual_api_success':False,'collected_matches':0,'duplicate_matches':0,'valid_matches':0,'usable_timeline_matches':0,'timeline_missing_matches':0,'timeline_fetch_failures':0,'role_flagged_matches':0,'patch_counts':{},'lane_matchup_counts':{},'errors':{},'api_events':{},'matchups':[],'examples':[],'verified_matchups':0,'ratings_changed':False,'sheet_write_enabled':False,'sheet_update_plan':{'write_enabled':False,'proposals':[],'reason':'no actual statistics'},'limitations':['Current seed tier does not prove participant tiers at match time.','Riot reported roles cannot detect all physical lane swaps.','Observational statistics do not establish causal skill counters.']}
+    return {'project':'PICKOU','observed_at':dt.datetime.now(dt.timezone.utc).isoformat(),'status':'not_started','data_origin':'riot_api','actual_api_success':False,'collected_matches':0,'duplicate_matches':0,'valid_matches':0,'usable_timeline_matches':0,'timeline_missing_matches':0,'timeline_fetch_failures':0,'role_flagged_matches':0,'quality_flagged_matches':0,'patch_counts':{},'unknown_champion_ids':{},'lane_matchup_counts':{},'errors':{},'api_events':{},'matchups':[],'examples':[],'verified_matchups':0,'ratings_changed':False,'sheet_write_enabled':False,'sheet_update_plan':{'write_enabled':False,'proposals':[],'reason':'no actual statistics'},'limitations':['Current seed tier does not prove participant tiers at match time.','Riot reported roles cannot detect all physical lane swaps.','Observational statistics do not establish causal skill counters.']}
 
 def live_context(root):
     path=root/'reports/official_latest.json'
@@ -22,7 +22,10 @@ def live_context(root):
     recent=False
     try: recent=0<=(dt.datetime.now(dt.timezone.utc)-dt.datetime.fromisoformat(report['checked_at'])).total_seconds()<48*3600
     except (KeyError,ValueError,TypeError): pass
-    confirmed=report.get('release_status')=='confirmed' and bool(report.get('live_url')) and report.get('patch')==state.get('public_patch') and recent
+    from urllib.parse import urlparse
+    source=urlparse(report.get('live_url') or '')
+    official_source=source.scheme=='https' and source.hostname=='www.leagueoflegends.com' and source.path.startswith('/ko-kr/news/')
+    confirmed=official_source and report.get('release_status')=='confirmed' and bool(report.get('live_url')) and report.get('patch')==state.get('public_patch') and recent
     return {'candidate_patch':state.get('public_patch'),'official_latest_live_patch':report.get('patch') if confirmed else None,'live_status':'confirmed' if confirmed else 'pending','basis':'official_regional_evidence' if confirmed else 'match_gameVersion_partition_only; latest live not confirmed'}
 
 def pilot(db,root,client,target=100,origin='riot_api'):
@@ -46,7 +49,8 @@ def pilot(db,root,client,target=100,origin='riot_api'):
             patch,payload=row[0],json.loads(row[1]);patches[patch]+=1
             q=quality(payload)
             if q['missing_timeline_minutes']: r['timeline_missing_matches']+=1
-            if q['role_flags']: r['role_flagged_matches']+=1;flags.update(q['role_flags'])
+            if q['role_flags']: r['quality_flagged_matches']+=1;flags.update(q['role_flags'])
+            if any(f in q['role_flags'] for f in ('ambiguous_roles','role_disagreement_or_swap')): r['role_flagged_matches']+=1
             if not q['valid']: errors['invalid_match_quality']+=1;continue
             official=r['patch_context']['official_latest_live_patch']
             if official and patch!=official: errors['other_patch_preserved_excluded_from_target']+=1;continue
@@ -59,13 +63,22 @@ def pilot(db,root,client,target=100,origin='riot_api'):
         except (ValueError,KeyError,TypeError):
             errors['invalid_response']+=1
         if errors['api_request_failed']>=5: errors['circuit_breaker']+=1;break
+    unknown=Counter()
+    for match_id in selected:
+        raw=db.execute('SELECT payload FROM matches WHERE match_id=?',(match_id,)).fetchone()[0]
+        for player in json.loads(raw)['participants']:
+            if str(player.get('championId')) not in mapping: unknown[str(player.get('championId'))]+=1
+    r['unknown_champion_ids']=dict(unknown)
     groups=summarize(db,mapping,selected)
     for group in groups:
         group['status']=status(group)
+        group['roster_status']='registered' if db.execute('SELECT 1 FROM matchups WHERE lane=? AND champion=? AND opponent=?',group['key'][1:4]).fetchone() else 'outside_initial_lane_roster'
         # An existing manual decision counts only when tied to the same source sample.
         approved=db.execute("SELECT s.sources,s.metrics FROM decisions d JOIN statistics s ON d.statistic_id=s.id WHERE d.status='manual_approved' AND d.patch=? AND d.lane=? AND d.champion=? AND d.opponent=? AND d.region=? AND d.tier=?",group['key']).fetchall()
         if any(set(json.loads(v[0]))==set(group['sources']) and json.loads(v[1])==group['metrics'] for v in approved): group['status']='approved'
-        record_statistics(db,group)
+        # Re-running the same source sample does not multiply stored statistic snapshots.
+        existing=db.execute('SELECT sources,metrics FROM statistics WHERE patch=? AND lane=? AND champion=? AND opponent=? AND region=? AND tier=?',group['key']).fetchall()
+        if not any(set(json.loads(sources))==set(group['sources']) and json.loads(metrics)==group['metrics'] for sources,metrics in existing): record_statistics(db,group)
         if group['status']=='approved': r['verified_matchups']+=1
         r['lane_matchup_counts'][group['key'][1]]=r['lane_matchup_counts'].get(group['key'][1],0)+1
     groups.sort(key=lambda x:(-x['sample_size'],x['key']))
@@ -84,6 +97,11 @@ def pilot(db,root,client,target=100,origin='riot_api'):
 def save_report(root,report):
     from scripts.check_patch import save_json
     import uuid
+    events=report.get('api_events',{})
+    report['api_requests']=events.get('requests',0)
+    report['api_limit_events']=events.get('http_429',0)
+    report['api_error_count']=events.get('http_errors',0)+events.get('network_or_decode_errors',0)
+    report['unverified_reasons']=['insufficient_sample' if any(g.get('status')=='insufficient_sample' for g in report['matchups']) else 'no_actual_samples' if not report['matchups'] else 'skill_evidence_or_approval_pending']
     directory=root/'reports/collection';run_id=dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:8]
     # Atomic JSON replacement and immutable per-run names; no source records are overwritten.
     save_json(directory/(run_id+'.json'),report);save_json(directory/'latest.json',report)
