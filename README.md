@@ -35,7 +35,7 @@ python scripts/collect_matches.py --region KR --tier UNSPECIFIED KR_123456789
 
 매일 KST 10:20에 `.github/workflows/patch-watch.yml`이 테스트 후 버전을 확인하고 보고서와 CSV를 커밋합니다. 동시 실행을 직렬화하고 아티팩트를 남깁니다. push/PR 시 `tests.yml`이 테스트와 명단 DB 초기화를 수행합니다. 자동 이슈 발송은 사용하지 않습니다.
 
-**공식 노트 수집·지역별 적용 확인은 자동화가 완료되지 않았습니다.** watcher는 무조건 `pending_official_notes_and_regional_live_evidence`를 표시합니다. `confirm_release`는 제공된 공식 URL/패치/지역/확인시각/노트 digest를 교차 점검하는 함수이며 실제 문서나 서버를 가져오는 수집기가 아닙니다. Data Dragon 감지만으로 공식 출시나 검증 완료로 표시하지 않습니다. 정적 버전이 같아도 발생하는 핫픽스는 현재 감지 범위 밖입니다.
+Data Dragon watcher의 출시 상태와 공식 수집 상태는 분리합니다. 공식 노트는 목록 탐색과 본문 구조 검증 후 별도 파이프라인으로 수집하며 동일 버전의 관련 변경 목록도 비교합니다. KR 서버 적용 완료 근거가 없으면 pending입니다. 노트 수집이나 Data Dragon만으로 라이브 적용을 확정하지 않습니다.
 
 ## 외부 연결 상태와 제약
 
@@ -49,13 +49,13 @@ python scripts/collect_matches.py --region KR --tier UNSPECIFIED KR_123456789
 
 ## 2단계 (2026-11-05)
 
-`python scripts/check_official.py`는 현재 운영 패치의 한국어 Riot 공식 노트를 매번 가져옵니다. HTML의 스크립트/스타일을 제외한 본문 SHA-256으로 같은 패치 내 수정도 감지합니다. 수정은 핫픽스 **후보**이며 편집 수정과 실제 밸런스 변경을 자동 확정하지 않습니다. 원문 텍스트, 카테고리별 변경 문장, 출처 URL, digest, 패치별 이력과 큐를 보관합니다. 구조 인식 실패 및 아이템/룬 의존성 불명 시 전체 대진을 재검토합니다. 현재 공식 문장의 아이템/룬 ID 매핑은 미완료이므로 보수적 전체 검토를 사용합니다.
+`python scripts/check_official.py`는 현재 운영 패치의 한국어 Riot 공식 노트를 매번 가져옵니다. 기사의 협곡 변경 목록 SHA-256으로 같은 패치 내 수정 후보를 감지하고 기사 편집 digest는 별도로 저장합니다. 수정은 핫픽스 **후보**이며 편집 수정과 실제 밸런스 변경을 자동 확정하지 않습니다. 원문 텍스트, 카테고리별 변경 문장, 출처 URL, digest, 패치별 이력과 큐를 보관합니다. 구조 인식 실패 및 아이템/룬 의존성 불명 시 전체 대진을 재검토합니다. 현재 공식 문장의 아이템/룬 ID 매핑은 미완료이므로 보수적 전체 검토를 사용합니다.
 
 KR 적용은 `RIOT_KR_LIVE_EVIDENCE_URL` 저장소 변수로 지정한 실제 한국 공식 공지의 패치 번호·한국 서버·완료 문장을 확인합니다. 노트 게시 자체나 Data Dragon 갱신은 적용 근거가 아닙니다. 근거가 없으면 pending입니다. 공식 공지 자동 탐색 및 의미 판독의 완전성은 보장하지 않으며 수동 근거 검토가 필요합니다.
 
 `rift.limiter`는 단일 프로세스/단일 API 키 워커에서 직렬 호출, 1.3초 최소 간격, 120초당 90회 제한 및 앱/메서드 응답 헤더 소진 시 대기를 적용합니다. 여러 프로세스에서 동일 키를 공유하는 운영은 지원하지 않습니다. API 키는 수동 수집 workflow의 GitHub Secrets로만 주입합니다. 키 미설정은 실패이며 수집 성공으로 표시하지 않습니다. 누락 프레임은 통계에서 제외하고 기존 자료를 수정하지 않습니다.
 
-### 2단계 실제 검증 결과
+### 2단계 초기 검증 기록 — 수정 전
 
 28개 테스트 로컬/Actions 통과: https://github.com/SD608/lol-project/actions/runs/41942136649 . 공식 수집 실실행은 현재 `26.22`의 예상 Riot URL에서 HTTP 404로 실패: https://github.com/SD608/lol-project/actions/runs/41942136686 . 따라서 실제 공식 노트 수집 완료·KR 적용 확인·실제 핫픽스 발견을 주장하지 않습니다. URL 발견/공식 게시 여부 확인이 다음 작업이며, 404에서 우회 수집하거나 라이브 적용을 추정하지 않습니다. 해당 실행은 원격 패치 상태/공식 이력을 커밋하지 않았습니다. 공식 노트 구조화/핫픽스 후보/완료 근거는 모의 HTML 테스트 검증입니다. 실제 Match-V5는 키가 없어 실행하지 않았습니다.
 
@@ -66,4 +66,15 @@ KR 적용은 `RIOT_KR_LIVE_EVIDENCE_URL` 저장소 변수로 지정한 실제 �
 
 밸런스 digest는 협곡의 실제 변경 블록만 포함하며 기사 편집 digest와 분리합니다. 본문 편집만으로 재검증 큐를 만들지 않습니다. 변경 목록의 문구 수정은 의미적 동등성을 자동 판별할 수 없으므로 밸런스/핫픽스 **후보**로만 표시합니다. 공식 노트의 추가 패치 언급도 한국 적용 완료를 증명하지 않습니다. 자동 확정 핫픽스는 없습니다.
 
-`python scripts/verify_official_2622.py`는 네트워크 통합 검사로 실제 공식 목록과 26.22 기사를 수집합니다. 오프라인 unittest와 구분하며 `reports/official_26.22_integration.json`을 생성합니다. 기존 28개를 포함한 34개 오프라인 테스트 통과. 실제 Actions 결과는 ROADMAP에 기록합니다. 경로/DB 명칭은 유지하며 상성 등급은 생성·복사하지 않습니다.
+`python scripts/verify_official_2622.py`는 네트워크 통합 검사로 실제 공식 목록과 26.22 기사를 수집합니다. 오프라인 unittest와 구분하며 `reports/official_26.22_integration.json`을 생성합니다. 기존 28개를 포함한 36개 오프라인 테스트 통과. 실제 Actions 결과는 ROADMAP에 기록합니다. 경로/DB 명칭은 유지하며 상성 등급은 생성·복사하지 않습니다.
+
+
+### PICKOU 수정 후 실제 검증 결과
+
+- 실제 공식 목록에서 탐색한 URL: https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-22-notes
+- 실제 수집·본문 분석·26.22 통합 검사·보고서 커밋 성공: https://github.com/SD608/lol-project/actions/runs/41943529719
+- 기존 28개 + 신규 8개 = 36개 오프라인 테스트 Actions 성공: https://github.com/SD608/lol-project/actions/runs/41943529723
+- 실제 수집 결과: `reports/official_26.22_integration.json`. 상세 변경 목록/출처/digest/모드별 내용은 `reports/official_latest.json`, 이력은 `reports/official_history/`.
+- 협곡 챔피언: 아우렐리온 솔, 코르키, 케일, 로크, 마오카이, 멜, 나피리, 럼블, 쉔, 스몰더, 쓰레쉬, 빅토르, 야스오, 자헨.
+- 협곡 아이템: 도란의 활, 지배자의 피갑옷. 룬 변경 블록 없음. 아수라장/클래식 변경은 협곡 대상에서 제외.
+- KR 적용 완료 pending, 실제 핫픽스 확인 없음. 핫픽스/편집/404/구조 변경 경로는 모의 테스트로 검증했으며 실제 핫픽스 발생을 주장하지 않음. DB/상성 등급/Sheets 변경 없음.
