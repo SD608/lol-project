@@ -290,3 +290,48 @@ async def counters(request: Request, lane: str = Query(...), opponent: str = Que
                  "are not counter recommendations." if is_off_meta else
                  "Only manually approved current-patch matchup ratings can be recommended.")
     }
+
+@app.get("/api/v1/patch-impact")
+async def patch_impact(request: Request, champion: str = Query(..., min_length=1, max_length=NAME_MAX),
+                       lane: str | None = None, limit: int = Query(20, ge=1, le=100),
+                       offset: int = Query(0, ge=0)):
+    """Read-only inventory of stored matchups touching one changed champion.
+
+    These are candidates for review, NOT verified balance effects or patch-specific
+    statistics. Includes both directional rows without collapsing reverse pairs.
+    """
+    validate_pair(lane, champion, None)
+    known = await one(request, "SELECT name FROM pickou.champions WHERE name=$1", champion)
+    if known is None:
+        raise HTTPException(404, "Champion not found")
+
+    groups = await fetch(request, """
+        SELECT lane, count(*)::int AS matchups
+        FROM pickou.matchups
+        WHERE (champion=$1 OR opponent=$1)
+          AND ($2::text IS NULL OR lane=$2)
+        GROUP BY lane ORDER BY lane
+    """, champion, lane)
+    total = sum(row["matchups"] for row in groups)
+    rows = await fetch(request, """
+        SELECT lane, champion, opponent
+        FROM pickou.matchups
+        WHERE (champion=$1 OR opponent=$1)
+          AND ($2::text IS NULL OR lane=$2)
+        ORDER BY lane, champion, opponent
+        LIMIT $3 OFFSET $4
+    """, champion, lane, limit, offset)
+    return {
+        "champion": champion, "lane": lane, "total": total,
+        "limit": limit, "offset": offset,
+        "lanes": [{"lane": row["lane"], "matchups": row["matchups"]} for row in groups],
+        "items": [{
+            "id": matchup_id(row["lane"], row["champion"], row["opponent"]),
+            "lane": row["lane"],
+            "champion": row["champion"], "opponent": row["opponent"],
+            "position": "pick" if row["champion"] == champion else "enemy",
+            "review_status": "potential_review",
+            "actual_effect_verified": False,
+        } for row in rows],
+        "note": "Registered matchup inventory only: balance effect and current-patch rating are unverified.",
+    }
