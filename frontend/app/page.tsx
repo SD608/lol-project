@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import ChampionSearch from "./ChampionSearch";
 
 type Champion = { name: string; riot_id?: string | null; aliases?: string[]; initials?: string | null };
 type Lane = { lane: string; champion_count: number };
@@ -63,7 +64,6 @@ export default function Home() {
     return () => { active = false; };
   }, []);
 
-  const championsInLane = useMemo(() => champions, [champions]);
   const isReady = !!myChampion && !!opponent && myChampion !== opponent && !!lane && !searching;
 
   function go(next: Page) {
@@ -99,14 +99,8 @@ export default function Home() {
   const form = <section className="box search-box" aria-labelledby="search-title">
     <h2 id="search-title">챔피언 상성 조회</h2>
     <div className="search-grid">
-      <label className="field"><span>내 챔피언</span><select value={myChampion} onChange={(e) => { setMyChampion(e.target.value); setResult(null); setHasSearched(false); }} disabled={loadingOptions} aria-label="내 챔피언">
-        <option value="">챔피언 선택</option>
-        {championsInLane.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
-      </select></label>
-      <label className="field"><span>상대 챔피언</span><select value={opponent} onChange={(e) => { setOpponent(e.target.value); setResult(null); setHasSearched(false); }} disabled={loadingOptions} aria-label="상대 챔피언">
-        <option value="">상대 선택</option>
-        {championsInLane.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
-      </select></label>
+      <ChampionSearch label="내 챔피언" value={myChampion} items={champions} disabled={loadingOptions} onChange={(name) => { setMyChampion(name); setResult(null); setHasSearched(false); }} />
+      <ChampionSearch label="상대 챔피언" value={opponent} items={champions} disabled={loadingOptions} onChange={(name) => { setOpponent(name); setResult(null); setHasSearched(false); }} />
       <label className="field"><span>라인</span><select value={lane} onChange={(e) => { setLane(e.target.value); setResult(null); setHasSearched(false); }} aria-label="라인 선택">
         {LANES.map((item) => <option key={item} value={item}>{item}{lanes.length ? ` (${lanes.find((x) => x.lane === item)?.champion_count ?? 0})` : ""}</option>)}
       </select></label>
