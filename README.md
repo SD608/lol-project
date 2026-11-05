@@ -78,3 +78,14 @@ KR 적용은 `RIOT_KR_LIVE_EVIDENCE_URL` 저장소 변수로 지정한 실제 �
 - 협곡 챔피언: 아우렐리온 솔, 코르키, 케일, 로크, 마오카이, 멜, 나피리, 럼블, 쉔, 스몰더, 쓰레쉬, 빅토르, 야스오, 자헨.
 - 협곡 아이템: 도란의 활, 지배자의 피갑옷. 룬 변경 블록 없음. 아수라장/클래식 변경은 협곡 대상에서 제외.
 - KR 적용 완료 pending, 실제 핫픽스 확인 없음. 핫픽스/편집/404/구조 변경 경로는 모의 테스트로 검증했으며 실제 핫픽스 발생을 주장하지 않음. DB/상성 등급/Sheets 변경 없음.
+
+
+## PICKOU Supabase PostgreSQL — applied 2026-11-05
+
+- **Target only:** Supabase project `PICKOU` (`yspqfkcexibucnwvxdmw`, Tokyo). Existing SD Supabase projects, SQLite, Google Sheets: **not modified**.
+- Database schema: private `pickou` (14 tables), 21 foreign-key constraints; `anon` and `authenticated` have no schema USAGE, no table grants. All 14 tables have RLS enabled (no browser-facing policies). FastAPI must use separately authorized server-side DB access; never expose service keys in Next.js.
+- Applied migration records: `20261105013751_pickou_foundation_v1_with_immutable_import_ledger` and `pickou_enable_rls_and_fk_indexes`. SQL copies in `database/migrations/`; an exact-value roster seed SQL archive is also saved there (seed executed through SQL, not registered as DDL migration).
+- Input: `data/lane_champions.json` Git blob `4c0e31de879718a42e4a676914dcb7996a8f1f3f`. The source snapshot and import ledger preserve origin/revision and are append-only.
+- **Verified by actual PostgreSQL SQL:** 173 champions / 266 champion-lane registrations / 14,468 directional matchups; missing foreign keys 0, duplicate pairs 0, self-matchups 0, missing reverse pairs 0. Five lane counts: top 65, jungle 56, mid 62, bot 35, support 48.
+- Patch/event evidence, matchup statistics, decisions and validation history are separate append-only models; the **actual match statistics and matchup ratings have not been collected or asserted**. Missing ratings are not 5:5.
+- Not yet done: real FastAPI/PostgreSQL integration, privileged backend authorization integration tests, Next.js responsive UI, deployment, and API security/production load tests. Schema-only and seed validation must not be confused with end-to-end deployment.
