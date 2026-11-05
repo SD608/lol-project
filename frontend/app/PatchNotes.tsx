@@ -2,14 +2,11 @@
 
 import { useState } from "react";
 import snapshot from "../data/official-patch-snapshot.json";
+import detailSnapshot from "../data/official-patch-details.json";
 
 type Category = "전체" | "챔피언" | "아이템" | "룬";
 const categories: Category[] = ["전체", "챔피언", "아이템", "룬"];
-const entries = [
-  ...snapshot.champions.map((name) => ({ name, category: "챔피언" as const })),
-  ...snapshot.items.map((name) => ({ name, category: "아이템" as const })),
-  ...snapshot.runes.map((name) => ({ name, category: "룬" as const })),
-];
+const entries = detailSnapshot.entries;
 
 export default function PatchNotes() {
   const [category, setCategory] = useState<Category>("전체");
@@ -43,7 +40,7 @@ export default function PatchNotes() {
     </section>
     <section className="box">
       <h2>변경 대상 목록</h2>
-      <p className="muted">상향·하향 여부나 수치는 자동 판정하지 않았습니다. 자세한 변경 내용은 공식 원문에서 확인해 주세요.</p>
+      <p className="muted">변경 대상을 클릭하면 공식 패치 노트에서 추출한 변경 전·후 수치를 바로 볼 수 있어요. 전체 패치 적용 여부는 별도로 확인해야 합니다.</p>
       <div className="patch-filters">
         <div className="patch-tabs" role="group" aria-label="변경 대상 종류">
           {categories.map((item) => <button type="button" key={item} className={category === item ? "patch-tab active" : "patch-tab"} onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>)}
@@ -52,10 +49,24 @@ export default function PatchNotes() {
           <input type="search" placeholder="챔피언 또는 아이템 이름" value={query} onChange={(e) => setQuery(e.target.value)} />
         </label>
       </div>
-      {filtered.length ? <div className="patch-entry-list">
-        {filtered.map((entry) => <div key={entry.category + entry.name} className="patch-entry">
-          <strong>{entry.name}</strong><span>{entry.category} · 세부 내용은 공식 원문 확인</span>
-        </div>)}
+      {filtered.length ? <div className="patch-detail-list">
+        {filtered.map((entry) => <details key={entry.category + entry.name} className="patch-detail-card">
+          <summary className="patch-detail-trigger">
+            <strong>{entry.name}</strong>
+            <span>{entry.category} · 변경 항목 {entry.rows.length}개 · 눌러서 펼치기</span>
+          </summary>
+          <div className="patch-detail-content">
+            {entry.rows.map((change, index) => <div className="patch-change" key={entry.name + index}>
+              <strong>{change.label}</strong>
+              {"before" in change && "after" in change ? <div className="patch-before-after">
+                <div><span className="patch-column-label">변경 전</span><p>{change.before}</p></div>
+                <div><span className="patch-column-label">변경 후</span><p>{change.after}</p></div>
+              </div> : <p className="muted">{"note" in change ? change.note : "세부 변경 확인 필요"}</p>}
+            </div>)}
+            <p className="muted patch-detail-disclaimer">공식 수집 기록을 정리한 내용이며, 자유서술식 추가 효과나 변경 내용 전체를 빠짐없이 포함한다고 보장하지 않습니다.</p>
+            <a className="patch-inline-source" href={detailSnapshot.official_url} target="_blank" rel="noopener noreferrer">공식 패치 노트 원문 확인 ↗</a>
+          </div>
+        </details>)}
       </div> : <p className="muted">조건에 맞는 변경 대상이 없습니다.</p>}
     </section>
     <p className="muted classification-note">출처: PICKOU 공식 패치 수집 보고서. 이 목록만으로 상성 등급이나 승률이 변경되지는 않습니다.</p>
