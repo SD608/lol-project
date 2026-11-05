@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import ChampionSearch from "./ChampionSearch";
+import PatchNotes from "./PatchNotes";
 
 type Champion = { name: string; riot_id?: string | null; aliases?: string[]; initials?: string | null };
 type Lane = { lane: string; champion_count: number };
@@ -222,7 +223,7 @@ export default function Home() {
               상대: {entry.opponent}<span>{entry.lane}</span>
             </button>)}</div> : <p className="muted">이번 세션에서 조회한 기록이 없습니다.</p>}
           </section>
-        </> : page === "즐겨찾기" ? <section className="box favorites-panel">
+        </> : page === "패치 노트" ? <PatchNotes /> : page === "즐겨찾기" ? <section className="box favorites-panel">
           <h1>즐겨찾기</h1>
           <p className="muted">자주 상대하는 챔피언과 라인을 저장해서 바로 다시 조회할 수 있어요.</p>
           {!storageReady ? <p className="muted">저장된 목록을 불러오는 중…</p> :
