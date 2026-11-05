@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS validation_history(id INTEGER PRIMARY KEY, decision_i
 CREATE TABLE IF NOT EXISTS composition_evidence(id INTEGER PRIMARY KEY, patch TEXT NOT NULL, champion TEXT NOT NULL, phase TEXT CHECK(phase IN ('early','mid','late')), dimensions TEXT NOT NULL, source TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'unverified');
 '''
 INITIALS = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'
-ALIASES = {'미스 포츈':['미포'], '아우렐리온 솔':['아우솔'], '트위스티드 페이트':['트페'], '징크스':['징키']}
+ALIASES = {'미스 포츈':['미포'], '아우렐리온 솔':['아우솔'], '트위스티드 페이트':['트페'], '징크스':['징키'], '케이틀린':['케틀','케틀린']}
 
 def initials(name):
     return ''.join(INITIALS[(ord(c)-0xAC00)//588] if 0xAC00<=ord(c)<=0xD7A3 else c for c in name).replace(' ','')
