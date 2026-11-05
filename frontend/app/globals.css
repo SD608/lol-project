@@ -195,3 +195,19 @@ p{line-height:1.55;margin:8px 0}
 .external-reference-link:hover{background:#f2f2f2}
 .external-reference-link:focus-visible{outline:3px solid #444;outline-offset:3px}
 @media(max-width:767px){.external-reference{flex-direction:column;align-items:stretch}.external-reference-link{text-align:center}}
+
+/* Browser-local, manually transcribed third-party matchup statistics */
+.external-reference-panel{display:block}
+.external-reference-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.external-stat-list{border:1px solid #ccc;border-radius:5px;overflow:hidden;margin:16px 0}
+.external-stat-row{display:grid;grid-template-columns:minmax(120px,1fr) minmax(145px,1.2fr) minmax(75px,.55fr);gap:12px;align-items:center;padding:13px 15px;border-bottom:1px solid #e0e0e0;font-size:14px}
+.external-stat-row:last-child{border-bottom:0}
+.external-stat-row span:last-child{text-align:right;color:#626262}
+.external-stat-actions{display:flex;gap:10px;flex-wrap:wrap}
+.external-stat-editor{padding:15px;margin:15px 0;border:1px solid #ccc;border-radius:5px}
+.external-stat-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.external-stat-editor label{display:flex;flex-direction:column;gap:7px;font-weight:600;font-size:13px}
+.external-stat-editor input,.external-stat-editor textarea{border:1px solid #999;border-radius:4px;padding:11px;font:inherit;font-weight:400;width:100%;min-width:0}
+.external-stat-paste-label{margin:0 0 14px}
+.external-stat-editor .action-button{margin-top:3px}
+@media(max-width:767px){.external-reference-head{flex-direction:column}.external-reference-link{width:100%}.external-stat-fields{grid-template-columns:1fr}.external-stat-row{grid-template-columns:1fr 1fr}.external-stat-row strong{grid-column:1/-1}.external-stat-row span:last-child{text-align:right}}
