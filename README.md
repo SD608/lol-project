@@ -113,3 +113,24 @@ python scripts/validate_sheets_mapping.py
 - 실제 API 요청 0 / 실제 경기 0 / 승인된 매치업 0 / 실제 통계 예시 0. 테스트용 모의 데이터를 실제 수집 자료로 보고하지 않았습니다.
 - 지속 기록: `reports/stage3_execution.json`, `reports/stage3_execution.md`. 실제 표본 100건과 통계 예시 최대 5건은 키 설정 후 실증해야 합니다.
 - 다음 단계: 저장소 Settings → Secrets and variables → Actions에 RIOT_API_KEY를 설정하고 PICKOU KR Riot pilot을 수동 실행합니다. 키 값을 채팅·코드에 붙여넣지 않습니다.
+
+
+## PICKOU Supabase PostgreSQL — applied 2026-11-05
+
+- **Target only:** Supabase project `PICKOU` (`yspqfkcexibucnwvxdmw`, Tokyo). Existing SD Supabase projects, SQLite, Google Sheets: **not modified**.
+- Database schema: private `pickou` (14 tables), 21 foreign-key constraints; `anon` and `authenticated` have no schema USAGE, no table grants. All 14 tables have RLS enabled (no browser-facing policies). FastAPI must use separately authorized server-side DB access; never expose service keys in Next.js.
+- Applied migration records: `20261105013751_pickou_foundation_v1_with_immutable_import_ledger` and `pickou_enable_rls_and_fk_indexes`. SQL copies in `database/migrations/`; an exact-value roster seed SQL archive is also saved there (seed executed through SQL, not registered as DDL migration).
+- Input: `data/lane_champions.json` Git blob `4c0e31de879718a42e4a676914dcb7996a8f1f3f`. The source snapshot and import ledger preserve origin/revision and are append-only.
+- **Verified by actual PostgreSQL SQL:** 173 champions / 266 champion-lane registrations / 14,468 directional matchups; missing foreign keys 0, duplicate pairs 0, self-matchups 0, missing reverse pairs 0. Five lane counts: top 65, jungle 56, mid 62, bot 35, support 48.
+- Patch/event evidence, matchup statistics, decisions and validation history are separate append-only models; the **actual match statistics and matchup ratings have not been collected or asserted**. Missing ratings are not 5:5.
+- Not yet done: real FastAPI/PostgreSQL integration, privileged backend authorization integration tests, Next.js responsive UI, deployment, and API security/production load tests. Schema-only and seed validation must not be confused with end-to-end deployment.
+
+
+## PICKOU 4.1 — 라이브 최소권한 DB 역할 적용 (2026-11-05)
+
+- 적용 대상: PICKOU `yspqfkcexibucnwvxdmw` 한정. SQL migration: `20261105020903_pickou_api_reader_select_only_rls`.
+- `pickou_api_reader` LOGIN 역할 생성, 슈퍼유저/BYPASSRLS/CREATE 권한 없음. 인증 비밀번호는 **NULL** (미설정). 필요한 7개 테이블에 SELECT만, 각 테이블에 역할 전용 SELECT RLS 정책. 7개 나머지 테이블 접근 없음. 브라우저 `anon`/`authenticated` 사용 권한 없음.
+- 실제 Supabase SQL 카탈로그 검증: 14 tables, 173/266/14,468, 7개 역할 전용 정책, INSERT/UPDATE/DELETE 0개. 이력/기존 데이터 변경 없음.
+- 실제 역할 전환 SQL (FastAPI 아님)에서 173/266/14,468, 탑 우르곳 상대 64, 페이지 10개, 패치 0개 SELECT 검증. INSERT/UPDATE/DELETE는 실제 실행 없이 EXPLAIN 권한 거부 확인. 재현용 `database/tests/verify_pickou_reader_permissions.sql`.
+- 테스트 중 권한 변경은 ROLLBACK. 관리자의 기존 역할 생성자 멤버십은 SET=false/INHERIT=false, 추가 SET 권한 유지되지 않음.
+- **실제 FastAPI 로그인/연결은 미완료**: 비밀번호와 backend-only 비밀 저장소가 없으며 공개 저장소에 비밀값을 기록하지 않음. PR #2는 Draft 유지.
