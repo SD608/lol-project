@@ -8,6 +8,8 @@ type Lane = { lane: string; champion_count: number };
 type Pick = { champion: string; rating: string };
 type Counters = {
   lane: string; opponent: string; patch: string | null; region: string; tier: string;
+  lane_registered: boolean; coverage_status: "registered" | "off_meta_unregistered";
+  data_status: "no_verified_matchups" | "partially_verified";
   hard_counters: Pick[]; counters: Pick[]; even: Pick[];
   unknown_count: number; total: number; note: string;
 };
@@ -21,7 +23,7 @@ async function readJson<T>(path: string): Promise<T> {
   const response = await fetch(API_BASE + path, { cache: "no-store" });
   if (!response.ok) {
     if (response.status === 503) throw new Error("데이터베이스 연결을 확인해 주세요.");
-    if (response.status === 404) throw new Error("해당 라인에 상대 챔피언이 등록되어 있지 않습니다.");
+    if (response.status === 404) throw new Error("등록되지 않은 챔피언입니다.");
     throw new Error(`API 응답 오류 (${response.status})`);
   }
   return response.json() as Promise<T>;
@@ -150,8 +152,13 @@ export default function Home() {
           {result && !searching && <>
             <section className="box summary-box">
               <h2>{result.opponent} 상대 추천 픽 <span className="summary-lane">{result.lane}</span></h2>
+              {result.coverage_status === "off_meta_unregistered" && <div className="offmeta-notice" role="status">
+                <strong>비주류 라인 픽 · 별도 데이터 부족</strong>
+                <p>이 챔피언은 {result.lane}의 기본 등록 명단에 없지만 검색은 지원해요. 다른 라인의 상성을 가져오지 않고, 검증된 {result.lane} 경기 데이터가 쌓일 때까지 추천을 보류합니다.</p>
+              </div>}
               <p className="muted">패치: {result.patch ?? "공식 적용 확인 대기"} · 검증된 추천: {result.hard_counters.length + result.counters.length + result.even.length}명</p>
-              {result.unknown_count > 0 && <p className="unknown-note">등록된 후보 {result.total}명 중 {result.unknown_count}명은 승인된 상성 판정이 없어 분류하지 않았습니다.</p>}
+              {result.data_status === "no_verified_matchups" && <p className="muted">해당 라인의 승인된 상성 판정이 아직 없습니다. 데이터가 없다는 뜻이지, 카운터가 없다는 뜻은 아닙니다.</p>}
+              {result.unknown_count > 0 && <p className="unknown-note">해당 라인의 선택 가능 후보 {result.total}명 중 {result.unknown_count}명은 검증된 상대 상성 정보가 없어 분류하지 않았습니다.</p>}
             </section>
             <div className="counter-results">
               <CounterGroup title="하드카운터" picks={result.hard_counters} empty="검증된 하드카운터가 아직 없습니다." />
