@@ -128,7 +128,10 @@ async def health(request: Request):
 @app.get("/api/v1/champions")
 async def champions(request: Request, q: str | None = Query(None, max_length=100), limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0)):
     # Aliases/initials from existing code are merged in memory; SQL remains read-only.
-    rows = await fetch(request, "SELECT name,riot_id,aliases,initials,image_url FROM pickou.champions ORDER BY name")
+    rows = await fetch(request, """SELECT c.name,c.riot_id,c.aliases,c.initials,c.image_url,
+        ARRAY(SELECT cl.lane FROM pickou.champion_lanes AS cl WHERE cl.champion=c.name
+              ORDER BY CASE cl.lane WHEN '탑' THEN 1 WHEN '정글' THEN 2 WHEN '미드' THEN 3 WHEN '바텀' THEN 4 ELSE 5 END) AS lanes
+        FROM pickou.champions AS c ORDER BY c.name""")
     items = [champion_view(r) for r in rows]
     if q:
         items = [item for item in items if match_search(item, q)]
