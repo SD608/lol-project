@@ -1,0 +1,23 @@
+name: PICKOU Riot API 403 diagnostics
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pickou-riot-diagnostic
+  cancel-in-progress: false
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline diagnostic safety tests
+        run: python -m unittest tests.test_riot_diagnostics -v
+      - name: Probe Riot endpoints (status codes only)
+        env:
+          RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
+        run: python scripts/diagnose_riot_api.py
