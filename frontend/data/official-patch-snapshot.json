@@ -1,0 +1,29 @@
+{
+  "patch": "26.22",
+  "official_url": "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-22-notes",
+  "checked_at": "2026-11-05T06:14:13.508944+00:00",
+  "release_status": "pending",
+  "hotfix_status": "none",
+  "champions": [
+    "아우렐리온 솔",
+    "코르키",
+    "케일",
+    "로크",
+    "마오카이",
+    "멜",
+    "나피리",
+    "럼블",
+    "쉔",
+    "스몰더",
+    "쓰레쉬",
+    "빅토르",
+    "야스오",
+    "자헨"
+  ],
+  "items": [
+    "도란의 활",
+    "지배자의 피갑옷"
+  ],
+  "runes": [],
+  "description": "공식 패치 노트 수집 기록. 변경 방향과 세부 수치는 원문 확인 필요."
+}
