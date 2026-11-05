@@ -3,6 +3,7 @@
 import { useState } from "react";
 import snapshot from "../data/official-patch-snapshot.json";
 import detailSnapshot from "../data/official-patch-details.json";
+import PatchImpact from "./PatchImpact";
 
 type Category = "전체" | "챔피언" | "아이템" | "룬";
 const categories: Category[] = ["전체", "챔피언", "아이템", "룬"];
@@ -11,6 +12,7 @@ const entries = detailSnapshot.entries;
 export default function PatchNotes() {
   const [category, setCategory] = useState<Category>("전체");
   const [query, setQuery] = useState("");
+  const [impactChampion, setImpactChampion] = useState<string | null>(null);
   const filtered = entries.filter((entry) =>
     (category === "전체" || entry.category === category) &&
     entry.name.replace(/\s/g, "").includes(query.replace(/\s/g, "").trim())
@@ -63,6 +65,14 @@ export default function PatchNotes() {
                 <div><span className="patch-column-label">변경 후</span><p>{change.after}</p></div>
               </div> : <p className="muted">{"note" in change ? change.note : "세부 변경 확인 필요"}</p>}
             </div>)}
+            {entry.category === "챔피언" ? <>
+              <button type="button" className="text-button patch-impact-button"
+                aria-expanded={impactChampion === entry.name}
+                onClick={() => setImpactChampion((current) => current === entry.name ? null : entry.name)}>
+                {impactChampion === entry.name ? "관련 대진 닫기" : "관련 라인별 매치업 보기"}
+              </button>
+              {impactChampion === entry.name && <PatchImpact champion={entry.name} patch={detailSnapshot.patch} />}
+            </> : <p className="muted">아이템은 실제 구매·빌드 표본이 없어서 특정 대진과 직접 연결하지 않습니다.</p>}
             <p className="muted patch-detail-disclaimer">공식 수집 기록을 정리한 내용이며, 자유서술식 추가 효과나 변경 내용 전체를 빠짐없이 포함한다고 보장하지 않습니다.</p>
             <a className="patch-inline-source" href={detailSnapshot.official_url} target="_blank" rel="noopener noreferrer">공식 패치 노트 원문 확인 ↗</a>
           </div>
