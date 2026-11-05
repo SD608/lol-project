@@ -49,6 +49,9 @@ class BackendContractTests(unittest.TestCase):
         self.assertTrue(match_search(miss, "미포"))
         self.assertTrue(match_search(miss, "ㅁㅅㅍㅊ"))
         self.assertTrue(match_search(miss, "미스 포츈"))
+        caitlyn = champion_view({"name": "케이틀린", "aliases": [], "initials": "", "riot_id": "Caitlyn", "image_url": None})
+        self.assertTrue(match_search(caitlyn, "케틀"))
+        self.assertTrue(match_search(caitlyn, "케이틀린"))
 
     def test_off_meta_enemy_returns_unregistered_coverage_not_404(self):
         from unittest.mock import AsyncMock, patch
