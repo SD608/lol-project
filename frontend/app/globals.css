@@ -154,3 +154,24 @@ p{line-height:1.55;margin:8px 0}
 .patch-detail-disclaimer{font-size:12px;margin-top:15px}
 .patch-inline-source{display:inline-block;margin-top:8px;color:#161616;font-size:13px;text-underline-offset:3px}
 @media(max-width:767px){.patch-before-after{grid-template-columns:1fr}.patch-detail-trigger{padding:13px}.patch-detail-trigger span{font-size:11px}.patch-detail-content{padding:0 13px 13px}}
+
+/* Patch change review candidates, sourced from registered DB directional pairs */
+.patch-impact-button{margin:18px 0 4px}
+.patch-impact-panel{margin:16px 0;border:1px solid #999;border-radius:5px;padding:18px;background:#fdfdfd}
+.patch-impact-panel h3{font-size:17px;margin:0 0 10px}
+.patch-impact-controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:16px 0}
+.patch-impact-controls label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:13px}
+.patch-impact-controls select{padding:9px 12px;min-width:140px;background:#fff;border:1px solid #888;border-radius:4px}
+.patch-impact-controls button,.patch-impact-pagination button{padding:9px 13px;background:white;border:1px solid #777;border-radius:4px}
+.patch-impact-controls button:disabled,.patch-impact-pagination button:disabled{color:#999;border-color:#ddd;cursor:not-allowed}
+.patch-impact-summary{padding:12px;background:#f4f4f4;border:1px solid #ddd;border-radius:4px}
+.patch-impact-lanes{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.patch-impact-lanes span{border:1px solid #ccc;padding:7px 9px;border-radius:4px;font-size:13px}
+.patch-impact-list{display:flex;flex-direction:column;gap:0;border:1px solid #ddd;border-radius:4px}
+.patch-impact-row{display:grid;grid-template-columns:54px minmax(150px,1.5fr) minmax(110px,1fr) 85px;gap:12px;padding:11px 13px;align-items:center;border-bottom:1px solid #e6e6e6;font-size:13px}
+.patch-impact-row:last-child{border-bottom:0}
+.patch-impact-row span{color:#666}
+.patch-impact-row strong{overflow-wrap:anywhere}
+.patch-impact-pagination{display:flex;align-items:center;justify-content:center;gap:14px;margin:16px 0}
+.patch-impact-footnote{font-size:12px;margin-top:18px}
+@media(max-width:767px){.patch-impact-panel{padding:12px}.patch-impact-row{grid-template-columns:44px minmax(0,1fr);gap:6px}.patch-impact-row span:nth-child(3),.patch-impact-row span:nth-child(4){grid-column:2}.patch-impact-pagination{gap:9px}}
