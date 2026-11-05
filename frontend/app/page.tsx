@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChampionSearch from "./ChampionSearch";
 
 type Champion = { name: string; riot_id?: string | null; aliases?: string[]; initials?: string | null };
@@ -55,6 +55,7 @@ export default function Home() {
   const [searchError, setSearchError] = useState("");
   const [result, setResult] = useState<Counters | null>(null);
   const [recent, setRecent] = useState<Array<{ lane: string; opponent: string }>>([]);
+  const requestSequence = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -77,22 +78,40 @@ export default function Home() {
   const canSearch = !!opponent && !!lane && !searching && !loadingOptions;
   function go(next: Page) { setPage(next); setMenuOpen(false); }
 
-  async function runSearch() {
-    if (!canSearch) return;
+  async function runSearch(target = opponent, selectedLane = lane) {
+    if (!target || !selectedLane) return;
+    const requestId = ++requestSequence.current;
     setSearching(true);
     setSearchError("");
     setResult(null);
     try {
       const data = await readJson<Counters>(
-        `/api/v1/counters?lane=${encodeURIComponent(lane)}&opponent=${encodeURIComponent(opponent)}`
+        `/api/v1/counters?lane=${encodeURIComponent(selectedLane)}&opponent=${encodeURIComponent(target)}`
       );
+      if (requestId !== requestSequence.current) return;
       setResult(data);
-      setRecent((prev) => [{ lane, opponent }, ...prev.filter((x) => x.lane !== lane || x.opponent !== opponent)].slice(0, 5));
+      setRecent((prev) => [{ lane: selectedLane, opponent: target }, ...prev.filter((x) => x.lane !== selectedLane || x.opponent !== target)].slice(0, 5));
     } catch (error: unknown) {
+      if (requestId !== requestSequence.current) return;
       setSearchError(error instanceof Error ? error.message : "조회 중 오류가 발생했습니다.");
     } finally {
-      setSearching(false);
+      if (requestId === requestSequence.current) setSearching(false);
     }
+  }
+
+  function changeOpponent(name: string) {
+    setOpponent(name);
+    setResult(null);
+    setSearchError("");
+    if (name) void runSearch(name, lane);
+    else { requestSequence.current += 1; setSearching(false); }
+  }
+
+  function changeLane(next: string) {
+    setLane(next);
+    setResult(null);
+    setSearchError("");
+    if (opponent) void runSearch(opponent, next);
   }
 
   return <div className="shell">
@@ -108,17 +127,17 @@ export default function Home() {
         {page === "상성 조회" || page === "홈" ? <>
           <div className="page-heading">
             <h1>상대 픽 카운터 찾기</h1>
-            <p>상대가 선택한 챔피언과 라인을 입력하면 유리한 픽을 찾아줘요.</p>
+            <p>상대 챔피언을 선택하면 해당 라인의 카운터 픽을 바로 조회해요.</p>
           </div>
           <section className="box search-box" aria-labelledby="search-title">
             <h2 id="search-title">상대 챔피언 선택</h2>
             <div className="search-grid enemy-search-grid">
               <ChampionSearch label="상대 챔피언" value={opponent} items={champions} disabled={loadingOptions}
-                onChange={(name) => { setOpponent(name); setResult(null); setSearchError(""); }} />
-              <label className="field"><span>상대 라인</span><select value={lane} onChange={(e) => { setLane(e.target.value); setResult(null); setSearchError(""); }} aria-label="상대 라인 선택">
+                onChange={changeOpponent} />
+              <label className="field"><span>상대 라인</span><select value={lane} onChange={(e) => changeLane(e.target.value)} aria-label="상대 라인 선택">
                 {LANES.map((item) => <option key={item} value={item}>{item}{lanes.length ? ` (${lanes.find((x) => x.lane === item)?.champion_count ?? 0})` : ""}</option>)}
               </select></label>
-              <button className="action-button" disabled={!canSearch} onClick={runSearch}>{searching ? "분석 중…" : "카운터 찾기"}</button>
+              <button className="action-button" disabled={!canSearch} onClick={() => void runSearch()}>{searching ? "분석 중…" : "다시 조회"}</button>
             </div>
             {optionsError && <p className="error-message" role="alert">챔피언 목록을 불러오지 못했습니다. {optionsError}</p>}
           </section>
@@ -126,7 +145,7 @@ export default function Home() {
           {searching && <section className="box" aria-live="polite">카운터 근거를 조회하고 있습니다.</section>}
           {!searchError && !searching && !result && <section className="box empty-results">
             <h2>카운터 추천 결과</h2>
-            <p className="muted">상대 챔피언을 선택하고 ‘카운터 찾기’를 눌러주세요.</p>
+            <p className="muted">상대 챔피언을 선택하면 자동으로 조회합니다.</p>
           </section>}
           {result && !searching && <>
             <section className="box summary-box">
@@ -143,7 +162,7 @@ export default function Home() {
           </>}
           <section className="box recent-panel">
             <h2>최근 조회</h2>
-            {recent.length ? <div className="recent-list">{recent.map((entry) => <button key={entry.lane + entry.opponent} type="button" onClick={() => { setLane(entry.lane); setOpponent(entry.opponent); setResult(null); setSearchError(""); }}>
+            {recent.length ? <div className="recent-list">{recent.map((entry) => <button key={entry.lane + entry.opponent} type="button" onClick={() => { setLane(entry.lane); setOpponent(entry.opponent); void runSearch(entry.opponent, entry.lane); }}>
               상대: {entry.opponent}<span>{entry.lane}</span>
             </button>)}</div> : <p className="muted">이번 세션에서 조회한 기록이 없습니다.</p>}
           </section>
