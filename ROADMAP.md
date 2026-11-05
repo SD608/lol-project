@@ -34,3 +34,5 @@
 미완료: KR 완료 공지 자동 탐색(현재 공식 URL 저장소 변수 지정), 공식 아이템/룬 ID 정밀 매핑, 동일 키 여러 워커용 분산 제한기, 실제 Riot 경기 수집(API 키 필요). 공식 문서 형식 변경은 전체 재검토로 보수 처리하며 텍스트 변화가 전부 핫픽스는 아닙니다. 공식 파이프라인은 DDragon과 별도 상태를 가지며 공식 수집 실패는 공식 상태를 갱신하지 않습니다. DDragon 단계가 먼저 성공한 뒤 공식 단계가 실패하면 DDragon 상태 파일은 실행 작업 디렉터리에서 바뀔 수 있으나 workflow는 실패하여 원격에 커밋하지 않습니다.
 
 2단계 첫 원격 실행: 테스트 26개 성공, Data Dragon 조회 성공, 공식 HTTP 수집 실패(원격 상태 커밋 안 함): https://github.com/SD608/lol-project/actions/runs/41941966248 . 오류 응답 코드 및 재시도 처리 보강 후 재검증. 실제 Riot 경기/한국 적용 완료 확인은 미실행.
+
+최종 원격 확인: 테스트 28개 성공 https://github.com/SD608/lol-project/actions/runs/41942136649 . 공식 수집 https://github.com/SD608/lol-project/actions/runs/41942136686 에서 HTTP 404 확인, 원격 커밋 단계 skipped. 실제 공식 URL 탐색과 문서 게시 확인이 필요하며 실제 공식 수집은 미완료. 기존 데이터베이스·명단·21개 테스트 및 Google Sheets는 변경하지 않음. 한국 서버 적용은 아직 pending이고 API 키는 설정하거나 노출하지 않았음.
