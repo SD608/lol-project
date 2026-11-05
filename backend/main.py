@@ -221,13 +221,18 @@ async def matchup_detail(id: str, request: Request, patch: str | None = None,
 async def counters(request: Request, lane: str = Query(...), opponent: str = Query(..., min_length=1, max_length=NAME_MAX),
                    region: str = Query("KR", min_length=2, max_length=16),
                    tier: str = Query("UNSPECIFIED", min_length=1, max_length=40)):
-    """Suggest picks against the selected opponent. Only human-approved patch-matching grades qualify."""
+    """Counter suggestions, including off-meta opponents without inventing matchups or grades."""
     validate_pair(lane, opponent, None)
-    # Verify opponent belongs to this lane; invalid lane/champion combination is not a counter search.
-    exists = await one(request,
+
+    # Existence in the global champion roster is independent of lane registration.
+    champion = await one(request,
+        "SELECT name FROM pickou.champions WHERE name=$1", opponent)
+    if champion is None:
+        raise HTTPException(404, "Champion not found")
+
+    registered = await one(request,
         "SELECT champion FROM pickou.champion_lanes WHERE lane=$1 AND champion=$2", lane, opponent)
-    if exists is None:
-        raise HTTPException(404, "Opponent not registered in this lane")
+    is_off_meta = registered is None
 
     patch = await one(request, """
         SELECT patch FROM pickou.patches
@@ -235,44 +240,53 @@ async def counters(request: Request, lane: str = Query(...), opponent: str = Que
         ORDER BY confirmed_at DESC NULLS LAST, created_at DESC
         LIMIT 1
     """, region)
+    patch_name = patch["patch"] if patch else None
 
-    # All lane registrations are known. Ratings are intentionally missing without an approved
-    # decision for the selected region/tier/confirmed patch. Never infer 5:5 or invent win rates.
+    # Use the selected lane's possible counter picks, excluding the opponent. For a
+    # non-registered opponent there are NO stored matchup rows: return eligible
+    # candidates as unverified only, never borrow ratings from another lane.
     rows = await fetch(request, """
-        SELECT m.champion,
+        SELECT cl.champion,
                CASE WHEN d.status='manual_approved' AND d.rating IS NOT NULL
                     THEN d.rating ELSE NULL END AS rating
-        FROM pickou.matchups AS m
+        FROM pickou.champion_lanes AS cl
+        LEFT JOIN pickou.matchups AS m
+          ON m.lane=cl.lane AND m.champion=cl.champion AND m.opponent=$2
         LEFT JOIN LATERAL (
             SELECT status, rating FROM pickou.matchup_decisions
             WHERE patch=$3 AND region=$4 AND tier=$5
               AND lane=m.lane AND champion=m.champion AND opponent=m.opponent
             ORDER BY created_at DESC,id DESC LIMIT 1
-        ) AS d ON TRUE
-        WHERE m.lane=$1 AND m.opponent=$2
-        ORDER BY m.champion
-    """, lane, opponent, patch["patch"] if patch else None, region, tier)
+        ) AS d ON m.champion IS NOT NULL AND $3::text IS NOT NULL
+        WHERE cl.lane=$1 AND cl.champion<>$2
+        ORDER BY cl.champion
+    """, lane, opponent, patch_name, region, tier)
 
-    hard = []
-    counter = []
-    even = []
-    unknown = []
+    hard, counter, even = [], [], []
+    unknown_count = 0
     for row in rows:
-        pick = {"champion": row["champion"], "rating": row["rating"]}
-        if row["rating"] in ("9:1", "8:2"):
+        rating = row["rating"]
+        pick = {"champion": row["champion"], "rating": rating}
+        if rating in ("9:1", "8:2"):
             hard.append(pick)
-        elif row["rating"] in ("7:3", "6:4"):
+        elif rating in ("7:3", "6:4"):
             counter.append(pick)
-        elif row["rating"] == "5:5":
+        elif rating == "5:5":
             even.append(pick)
-        elif row["rating"] is None:
-            unknown.append({"champion": row["champion"]})
-    # Anything graded 4:6 or worse is deliberately excluded from counter suggestions.
+        elif rating is None:
+            unknown_count += 1
+        # Ratings that favor the opponent are not recommended.
+
     return {
         "lane": lane, "opponent": opponent,
-        "patch": patch["patch"] if patch else None,
+        "lane_registered": not is_off_meta,
+        "coverage_status": "off_meta_unregistered" if is_off_meta else "registered",
+        "data_status": "no_verified_matchups" if not (hard or counter or even) else "partially_verified",
+        "patch": patch_name,
         "region": region, "tier": tier,
         "hard_counters": hard, "counters": counter, "even": even,
-        "unknown_count": len(unknown), "total": len(rows),
-        "note": "Only manually approved ratings on the latest confirmed patch are recommendations. Other picks are not scored."
+        "unknown_count": unknown_count, "total": len(rows),
+        "note": ("Opponent has no registered lane matchup evidence. Candidate lane picks "
+                 "are not counter recommendations." if is_off_meta else
+                 "Only manually approved current-patch matchup ratings can be recommended.")
     }
