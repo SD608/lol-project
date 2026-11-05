@@ -122,3 +122,12 @@ python scripts/validate_sheets_mapping.py
 - 기존 PostgreSQL의 `aliases`·`initials`는 현재 비어 있으므로 이전 `rift.database` 검색 규칙을 API 조회 시 적용합니다. 기존 DB 데이터 변경 없음.
 - 패치별 근거와 통계는 분리하며 미검증 등급은 `unknown`/`null`입니다. 과거 패치를 현재 확정으로 사용하지 않습니다.
 - **실제 FastAPI→Supabase 연결은 백엔드 전용 읽기 DB 계정 및 RLS 정책 준비 전까지 미검증**. 오프라인 테스트는 실DB 통합 테스트와 구별합니다. 프론트엔드와 배포는 미완료.
+
+
+### 4단계 GitHub Actions 검증 (2026-11-05)
+
+- 기존 54개 테스트 보존, 백엔드 계약 테스트 7개 추가: unittest **66개 중 61개 성공 + 라이브 DB 자격증명 없는 5개 건너뜀**. 서버 계약 테스트 pytest **7 passed**: https://github.com/SD608/lol-project/actions/runs/41951858101
+- 기존 워크플로 통과: https://github.com/SD608/lol-project/actions/runs/41951857873
+- **실제 PostgreSQL SQL 조회**는 Supabase 연결에서 별도 확인: 14 tables / 14 RLS / 21 FK / 9 immutable triggers / 173 champions / 266 lane registrations / 14,468 directional pairs / duplicate 0 / reverse missing 0. 현재 patches/statistics/decisions 각 0건. anon/authenticated schema USAGE false.
+- 위 SQL 실조회는 FastAPI 앱을 통과한 연결 검사가 아니다. 운영 reader 역할·RLS·비밀키가 마련된 후 tests/test_backend_live.py가 실제 API→DB를 시험하도록 구성했다. 해당 5개는 이번 CI에서 skipped다.
+- PR #1의 기존 main 충돌은 별도 merge commit으로 해결되어 GitHub mergeable=true, 리뷰 대기 상태. PR #2의 API 구현은 미배포.
