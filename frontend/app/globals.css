@@ -233,3 +233,26 @@ p{line-height:1.55;margin:8px 0}
 .sheet-reference-details{border-top:1px solid #eee;padding:10px 14px 14px;font-size:13px}
 .sheet-reference-details a{color:inherit;text-underline-offset:3px}
 @media(max-width:767px){.sheet-reference-head{flex-direction:column}.sheet-reference-groups{grid-template-columns:1fr}.sheet-reference-head .external-reference-link{width:100%}}
+
+/* Official champion mechanics side-by-side; all picks including off-meta */
+.all-evidence-filters{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:17px 0}
+.all-evidence-filters input,.all-evidence-filters select{border:1px solid #888;border-radius:4px;padding:10px 12px;background:#fff;min-width:0}
+.all-evidence-filters input{flex:1;min-width:170px}
+.all-evidence-filters span{font-size:13px;color:#666}
+.all-evidence-list{border:1px solid #ccc;border-radius:5px;overflow:hidden;max-height:440px;overflow-y:auto}
+.all-evidence-option{width:100%;background:#fff;border:0;border-bottom:1px solid #eee;padding:11px 14px;display:grid;grid-template-columns:minmax(85px,1fr) 85px minmax(120px,1.4fr) 100px;align-items:center;gap:9px;text-align:left;font-size:13px}
+.all-evidence-option:last-child{border-bottom:0}
+.all-evidence-option:hover,.all-evidence-option.selected{background:#eee}
+.all-evidence-option span{color:#666}
+.all-evidence-option span:last-child{text-align:right}
+.all-evidence-inspection{margin-top:20px;border-top:1px solid #bbb;padding-top:18px}
+.all-evidence-inspection h3{margin:0 0 8px}
+.all-evidence-inspection a{display:inline-block;margin:5px 0 13px;color:inherit;text-underline-offset:3px}
+.all-evidence-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:13px 0}
+.all-evidence-champion{border:1px solid #ccc;border-radius:5px;padding:15px;min-width:0}
+.all-evidence-champion h4{font-size:16px;margin:0 0 8px}
+.all-evidence-champion h4 small{color:#666;font-size:12px;font-weight:400}
+.all-evidence-ability{border-top:1px solid #ddd;padding:11px 0;font-size:13px}
+.all-evidence-ability strong{display:block;margin-bottom:5px}
+.all-evidence-ability p{overflow-wrap:anywhere}
+@media(max-width:767px){.all-evidence-option{grid-template-columns:minmax(90px,1fr) minmax(120px,1.2fr)}.all-evidence-option span:nth-child(2),.all-evidence-option span:last-child{display:none}.all-evidence-columns{grid-template-columns:1fr}}
