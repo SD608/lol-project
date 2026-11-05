@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import ChampionSearch from "./ChampionSearch";
 import PatchNotes from "./PatchNotes";
 
-type Champion = { name: string; riot_id?: string | null; aliases?: string[]; initials?: string | null };
+type Champion = { name: string; riot_id?: string | null; aliases?: string[]; initials?: string | null; lanes?: string[] };
 type Lane = { lane: string; champion_count: number };
 type Pick = { champion: string; rating: string };
 type Counters = {
@@ -178,7 +178,7 @@ export default function Home() {
           <section className="box search-box" aria-labelledby="search-title">
             <h2 id="search-title">상대 챔피언 선택</h2>
             <div className="search-grid enemy-search-grid">
-              <ChampionSearch label="상대 챔피언" value={opponent} items={champions} disabled={loadingOptions}
+              <ChampionSearch label="상대 챔피언" value={opponent} items={champions} selectedLane={lane} disabled={loadingOptions}
                 onChange={changeOpponent} />
               <label className="field"><span>상대 라인</span><select value={lane} onChange={(e) => changeLane(e.target.value)} aria-label="상대 라인 선택">
                 {LANES.map((item) => <option key={item} value={item}>{item}{lanes.length ? ` (${lanes.find((x) => x.lane === item)?.champion_count ?? 0})` : ""}</option>)}
