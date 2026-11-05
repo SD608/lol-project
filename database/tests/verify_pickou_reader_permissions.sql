@@ -1,6 +1,6 @@
 -- SQL-only live authorization check, PICKOU project yspqfkcexibucnwvxdmw.
 -- Run as postgres with permission to grant this role. Does not retain membership or mutate rows.
--- The temp grant below exists only inside this transaction; ROLLBACK clears it.
+-- The elevated SET option below is transactional and rolled back.\n-- Supabase may retain a pre-existing ADMIN-only creator membership (SET FALSE / INHERIT FALSE).
 BEGIN;
 GRANT pickou_api_reader TO postgres WITH ADMIN FALSE, INHERIT FALSE, SET TRUE;
 SET LOCAL ROLE pickou_api_reader;
