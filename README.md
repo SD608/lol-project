@@ -113,3 +113,12 @@ python scripts/validate_sheets_mapping.py
 - 실제 API 요청 0 / 실제 경기 0 / 승인된 매치업 0 / 실제 통계 예시 0. 테스트용 모의 데이터를 실제 수집 자료로 보고하지 않았습니다.
 - 지속 기록: `reports/stage3_execution.json`, `reports/stage3_execution.md`. 실제 표본 100건과 통계 예시 최대 5건은 키 설정 후 실증해야 합니다.
 - 다음 단계: 저장소 Settings → Secrets and variables → Actions에 RIOT_API_KEY를 설정하고 PICKOU KR Riot pilot을 수동 실행합니다. 키 값을 채팅·코드에 붙여넣지 않습니다.
+
+
+## 4단계: FastAPI 읽기 전용 API (2026-11-05)
+
+- `backend/` 디렉터리에 7개 `GET /api/v1/*` API와 asyncpg 연결 풀, 서버 전용 환경변수, Dockerfile, OpenAPI(`/openapi.json`)를 추가했습니다. 사용법: [backend/README.md](backend/README.md).
+- 데이터베이스 현황을 SQL로 다시 확인: PICKOU `yspqfkcexibucnwvxdmw`에서 테이블 14개, RLS 14개, 챔피언 173명, 라인 등록 266개, 방향성 매치업 14,468개. SQLite/Sheets/수집 워크플로 변경 없음.
+- 기존 PostgreSQL의 `aliases`·`initials`는 현재 비어 있으므로 이전 `rift.database` 검색 규칙을 API 조회 시 적용합니다. 기존 DB 데이터 변경 없음.
+- 패치별 근거와 통계는 분리하며 미검증 등급은 `unknown`/`null`입니다. 과거 패치를 현재 확정으로 사용하지 않습니다.
+- **실제 FastAPI→Supabase 연결은 백엔드 전용 읽기 DB 계정 및 RLS 정책 준비 전까지 미검증**. 오프라인 테스트는 실DB 통합 테스트와 구별합니다. 프론트엔드와 배포는 미완료.
