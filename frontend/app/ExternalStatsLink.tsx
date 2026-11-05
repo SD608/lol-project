@@ -20,13 +20,13 @@ export default function ExternalStatsLink({
   champion, lane,
 }: { champion: Champion | undefined; lane: string }) {
   const url = opggCounterUrl(champion, lane);
-  if (!url) return null;
+  const destination = url || "https://op.gg/lol/champions";
   return <section className="box external-reference">
     <div>
       <h2>OP.GG에서 상성 확인</h2>
       <p className="muted">
-        {champion?.name} · {lane}의 외부 카운터 통계 페이지로 이동합니다.
-        통계·승률·표본 수는 OP.GG에서 직접 확인하세요.
+        {champion?.name || "선택한 챔피언"} · {lane}의 OP.GG 통계를 확인하세요.
+        {url ? "해당 챔피언의 상성 페이지로 연결됩니다." : "챔피언 ID를 확인할 수 없어 OP.GG 챔피언 목록으로 연결됩니다. 해당 챔피언과 라인을 직접 선택하세요."}
       </p>
       <p className="muted reference-note">
         외부 통계는 PICKOU의 검증된 추천 등급이 아닙니다.
@@ -34,8 +34,8 @@ export default function ExternalStatsLink({
         비주류 라인은 통계가 부족하거나 표시되지 않을 수 있습니다.
       </p>
     </div>
-    <a className="external-reference-link" href={url} target="_blank" rel="noopener noreferrer">
-      OP.GG 상성 열기 ↗
+    <a className="external-reference-link" href={destination} target="_blank" rel="noopener noreferrer">
+      {url ? "OP.GG 상성 열기 ↗" : "OP.GG 챔피언 목록 열기 ↗"}
     </a>
   </section>;
 }
