@@ -104,3 +104,12 @@ python scripts/validate_sheets_mapping.py
 연결 도구로 5개 라인의 모든 A/B 대진 열과 A:Q 헤더를 실제 읽었습니다. 173명·266개 라인 등록·14,468개 대진이 명단과 DB의 행·챔피언·라인 기준으로 일치했습니다. 압축 스냅샷 `data/read_only/sheets_mapping.json.gz`는 로컬에서만 보관하고 GitHub에 게시하지 않습니다. GitHub에는 원본 행이 없는 검증 요약만 저장합니다. Actions의 `--summary-only`는 저장된 요약을 확인하며 실제 시트를 재조회한 검증이 아닙니다. 기존 상성 셀은 읽어 가져오거나 변경하지 않았습니다.
 
 실제 통계가 생기면 원본 행 키·source digest·기존 패치 재조회·별도 지역/티어 목적지 매핑을 요구하는 검토 계획만 생성합니다. 상성 등급 열 D/E는 계획에서도 제외하고 원본 쓰기 API는 없습니다. Google 쓰기는 별도 승인 및 정확한 목적지 매핑 전까지 비활성화합니다.
+
+
+### 3단계 실제 실행 결과
+
+- 기존 36개 포함 54개 테스트 통과: https://github.com/SD608/lol-project/actions/runs/41946190060
+- 실증 workflow: https://github.com/SD608/lol-project/actions/runs/41946190139 — RIOT_API_KEY GitHub Secret 미설정으로 key_missing(exit 2). 실패를 성공으로 처리하지 않으며 JSON·Markdown 아티팩트 업로드는 성공했습니다.
+- 실제 API 요청 0 / 실제 경기 0 / 승인된 매치업 0 / 실제 통계 예시 0. 테스트용 모의 데이터를 실제 수집 자료로 보고하지 않았습니다.
+- 지속 기록: `reports/stage3_execution.json`, `reports/stage3_execution.md`. 실제 표본 100건과 통계 예시 최대 5건은 키 설정 후 실증해야 합니다.
+- 다음 단계: 저장소 Settings → Secrets and variables → Actions에 RIOT_API_KEY를 설정하고 PICKOU KR Riot pilot을 수동 실행합니다. 키 값을 채팅·코드에 붙여넣지 않습니다.

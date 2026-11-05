@@ -63,3 +63,6 @@ KR League-V4 → PUUID 기반 Match-V5 경기 ID 탐색 → 중복 제거 → �
 
 
 3단계 첫 원격 검증: 테스트 48개 성공 https://github.com/SD608/lol-project/actions/runs/41945914149 . 실제 pilot https://github.com/SD608/lol-project/actions/runs/41945914124 는 RIOT_API_KEY GitHub Secret 미설정으로 key_missing(exit 2). 실제 API 호출 0 / 수집 0 / 승인된 매치업 0 / 실제 예시 없음. 실패 결과 JSON·Markdown 아티팩트 업로드 성공. 추가 회귀 테스트로 반복 실행 시 같은 통계 스냅샷이 중복 저장되는 JSON 튜플/리스트 비교 문제를 발견해 신뢰구간 직렬화 형식을 통일했습니다.
+
+
+최종 코드 검증: 54개 테스트 Actions 성공 https://github.com/SD608/lol-project/actions/runs/41946190060 . 공식 패치 감지 회귀 성공 https://github.com/SD608/lol-project/actions/runs/41946190040 . KR pilot https://github.com/SD608/lol-project/actions/runs/41946190139 는 RIOT_API_KEY Secret 미설정으로 실패했고 오류 보고서 아티팩트 업로드는 성공했습니다. 실제 API 요청·경기·승인 매치업은 각각 0입니다. 실행 요약은 reports/stage3_execution.json 및 .md에 기록. 외부 인증이 준비되기 전 실제 표본 100건과 5개 통계 예시는 미완료로 유지합니다.

@@ -1,0 +1,35 @@
+{
+  "project": "PICKOU",
+  "report_type": "execution_summary_from_github_actions",
+  "code_commit": "cca2e75a481f5a5e75b3ffe71802835126f2ef04",
+  "test_count": 54,
+  "tests_status": "success",
+  "tests_url": "https://github.com/SD608/lol-project/actions/runs/41946190060",
+  "pilot_url": "https://github.com/SD608/lol-project/actions/runs/41946190139",
+  "pilot_conclusion": "failure",
+  "status": "key_missing",
+  "api_requests": 0,
+  "actual_api_success": false,
+  "collected_matches": 0,
+  "duplicate_matches": 0,
+  "valid_matches": 0,
+  "patch_counts": {},
+  "lane_matchup_counts": {},
+  "timeline_missing_matches": 0,
+  "api_limit_events": 0,
+  "errors": {
+    "key_missing": 1
+  },
+  "verified_matchups": 0,
+  "actual_statistical_examples": [],
+  "sheet_mapping_rows_validated": 14468,
+  "sheet_write_enabled": false,
+  "private_sheet_source_uploaded": false,
+  "artifact_name": "pickou-kr-pilot",
+  "limitations": [
+    "No RIOT_API_KEY GitHub Secret; real sampling and five actual examples remain blocked.",
+    "Latest KR live patch remains pending without regional deployment evidence.",
+    "Current seed rank is not match-time participant rank."
+  ],
+  "next_step": "Configure RIOT_API_KEY in repository Actions Secrets and rerun PICKOU KR Riot pilot; never paste the key into chat."
+}
