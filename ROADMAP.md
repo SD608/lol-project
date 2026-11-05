@@ -66,3 +66,12 @@ KR League-V4 → PUUID 기반 Match-V5 경기 ID 탐색 → 중복 제거 → �
 
 
 최종 코드 검증: 54개 테스트 Actions 성공 https://github.com/SD608/lol-project/actions/runs/41946190060 . 공식 패치 감지 회귀 성공 https://github.com/SD608/lol-project/actions/runs/41946190040 . KR pilot https://github.com/SD608/lol-project/actions/runs/41946190139 는 RIOT_API_KEY Secret 미설정으로 실패했고 오류 보고서 아티팩트 업로드는 성공했습니다. 실제 API 요청·경기·승인 매치업은 각각 0입니다. 실행 요약은 reports/stage3_execution.json 및 .md에 기록. 외부 인증이 준비되기 전 실제 표본 100건과 5개 통계 예시는 미완료로 유지합니다.
+
+
+## 4단계 FastAPI 백엔드 (2026-11-05)
+
+- 구현: 별도 `backend` 앱, GET 7종(health/champions/champion detail/lanes/matchups/matchup detail/patches), asyncpg 풀, 503 DB 장애 처리, 파라미터 바인딩, 검색/페이지네이션, 제한 CORS, OpenAPI, Dockerfile, `.env.example`, 계약 테스트 및 CI.
+- 실제 DB 직접 SQL 검증: 프로젝트 `yspqfkcexibucnwvxdmw`, 14 테이블/14 RLS, 173 챔피언/266 라인/14,468 방향성 대진. DB UPDATE/DELETE/INSERT 미수행.
+- 기존 54개 테스트 보존. `backend-tests.yml`에서 unittest 전체와 backend pytest를 실행하도록 구성.
+- 실DB와 API 간 통합 연결·권한 검증은 **미완료**. 전용 최소권한 사용자/정교한 RLS 정책 생성 및 보안 자격증명 제공이 선행되어야 함. Github Actions에는 DB 비밀번호를 설정하지 않음.
+- 다음: PR #1 schema branch 충돌 해소, 서버 전용 reader DB ROLE 승인 및 실DB 읽기 테스트, API 계약/성능 측정, Next.js 반응형 프론트. 전체 배포 완료 아님.
