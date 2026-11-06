@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "scope": "mechanic_based_provisional",
+  "source_policy": "Official champion ability descriptions and preserved Google Sheet judgments. No fabricated win rates, no automatic numerical ratings. Recheck on balance changes.",
+  "generated_on": "2026-11-06",
+  "entries": [
+    {
+      "lane": "탑",
+      "champion": "가렌",
+      "opponent": "다리우스",
+      "assessment": "상대 우세 가능성",
+      "status": "provisional",
+      "phase": "초반~중반 장기 교전",
+      "mechanisms": [
+        "다리우스 과다출혈은 공격과 스킬 적중 시 중첩되므로 긴 교전에서 위협이 커진다.",
+        "가렌은 Q 침묵 후 짧게 교환하고 전투를 끊어 패시브 회복 시간을 확보하는 대응이 가능하다.",
+        "6레벨 이후 양측 궁극기 처형각과 체력 관리에 따라 결과가 달라질 수 있다."
+      ],
+      "counterplay": "다리우스 E 사거리 안에 오래 머물지 않고, 출혈 중첩을 쌓아 주는 장기 교전을 피한다.",
+      "limitations": "숙련도·정글 개입·아이템·패치 변경을 반영한 승률 검증은 없음. 장기 교전 우위를 경기 전체 승리로 환산하지 않음.",
+      "sources": [
+        {
+          "label": "가렌 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/garen/"
+        },
+        {
+          "label": "다리우스 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/darius/"
+        },
+        {
+          "label": "기존 시트 가렌 vs 다리우스",
+          "url": "https://docs.google.com/spreadsheets/d/1uitjfV_owbxUrPZRZm-Q0KdarZaiSQFTGyG2IZjEVcU/edit#gid=700001&range=A7:Q7"
+        }
+      ]
+    },
+    {
+      "lane": "탑",
+      "champion": "다리우스",
+      "opponent": "가렌",
+      "assessment": "내 챔피언 우세 가능성",
+      "status": "provisional",
+      "phase": "초반~중반 장기 교전",
+      "mechanisms": [
+        "다리우스의 출혈 중첩과 중첩 수에 따른 궁극기 피해가 긴 전투에서 위협적이다.",
+        "가렌은 침묵·이탈·패시브 회복을 사용해 짧은 교전으로 대응할 수 있다.",
+        "다리우스가 진입에 실패하거나 출혈 중첩을 유지하지 못하면 우세 근거가 약해진다."
+      ],
+      "counterplay": "가렌이 교전을 끊기 전에 E로 거리를 확보하되, 가렌의 침묵과 처형각을 경계한다.",
+      "limitations": "가렌 vs 다리우스 원본 시트의 방향을 역으로 해석한 잠정 판단이다. 이길 확률·카운터 등급은 계산하지 않음.",
+      "sources": [
+        {
+          "label": "다리우스 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/darius/"
+        },
+        {
+          "label": "가렌 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/garen/"
+        },
+        {
+          "label": "기존 시트 가렌 vs 다리우스",
+          "url": "https://docs.google.com/spreadsheets/d/1uitjfV_owbxUrPZRZm-Q0KdarZaiSQFTGyG2IZjEVcU/edit#gid=700001&range=A7:Q7"
+        }
+      ]
+    },
+    {
+      "lane": "서폿",
+      "champion": "노틸러스",
+      "opponent": "모르가나",
+      "assessment": "상대 우세 가능성",
+      "status": "provisional",
+      "phase": "라인전 진입·6레벨 이후 이니시",
+      "mechanisms": [
+        "노틸러스는 Q와 R을 활용한 군중제어 연계로 교전을 시작한다.",
+        "모르가나 E 칠흑의 방패가 유지되는 동안 일부 군중제어 연계가 차단될 수 있다.",
+        "방패 소모 후와 방패가 없는 대상의 위치는 노틸러스의 진입 기회가 될 수 있다."
+      ],
+      "counterplay": "E 방패 사용 여부를 먼저 확인하고, 방패가 빠진 대상에게 군중제어를 집중한다.",
+      "limitations": "보호막 흡수량·스킬 레벨·피해 유형 등에 따라 상호작용이 달라질 수 있으며 모든 CC가 항상 차단된다는 뜻이 아님.",
+      "sources": [
+        {
+          "label": "노틸러스 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/nautilus/"
+        },
+        {
+          "label": "모르가나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/morgana/"
+        },
+        {
+          "label": "기존 시트 노틸러스 vs 모르가나",
+          "url": "https://docs.google.com/spreadsheets/d/1uitjfV_owbxUrPZRZm-Q0KdarZaiSQFTGyG2IZjEVcU/edit#gid=700005"
+        }
+      ]
+    },
+    {
+      "lane": "서폿",
+      "champion": "모르가나",
+      "opponent": "노틸러스",
+      "assessment": "내 챔피언 우세 가능성",
+      "status": "provisional",
+      "phase": "라인전 진입·6레벨 이후 이니시",
+      "mechanisms": [
+        "모르가나는 칠흑의 방패를 활용해 노틸러스의 CC 중심 교전 계획에 대응할 수 있다.",
+        "노틸러스는 방패의 재사용 대기시간이나 다른 대상의 위치를 이용해 진입할 수 있다.",
+        "모르가나 방패가 피해로 깨지는 상황을 고려해야 한다."
+      ],
+      "counterplay": "노틸러스 Q·R 위협을 확인하고 핵심 대상에게 E를 적절히 사용한다. 방패 소진 이후는 거리 유지가 중요하다.",
+      "limitations": "전투 승률이나 압도적 카운터를 의미하지 않음. 조합·방패 레벨·타이밍에 따라 대응 성과가 달라짐.",
+      "sources": [
+        {
+          "label": "모르가나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/morgana/"
+        },
+        {
+          "label": "노틸러스 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/nautilus/"
+        },
+        {
+          "label": "기존 시트 노틸러스 vs 모르가나",
+          "url": "https://docs.google.com/spreadsheets/d/1uitjfV_owbxUrPZRZm-Q0KdarZaiSQFTGyG2IZjEVcU/edit#gid=700005"
+        }
+      ]
+    }
+  ]
+}
