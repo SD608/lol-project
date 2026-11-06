@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { resolveChampionId } from "./riotChampionResolver";
 import top from "../data/sheets-reference-top.json";
 import jungle from "../data/sheets-reference-jungle.json";
 import mid from "../data/sheets-reference-mid.json";
@@ -21,13 +22,12 @@ function plain(text: string | undefined): string {
     .replace(/\s+/g, " ").trim();
 }
 async function loadDetail(version: string, champion: Champion): Promise<Detail> {
-  const id = champion.riot_id;
-  if (!id || !/^[a-zA-Z0-9]+$/.test(id)) throw new Error(champion.name + ": Riot 챔피언 ID를 확인할 수 없습니다.");
+  const id = await resolveChampionId(version, champion);
   const url = `${CDN}/cdn/${encodeURIComponent(version)}/data/ko_KR/champion/${id}.json`;
   const response = await fetch(url);
   if (!response.ok) throw new Error(champion.name + ": 공식 스킬 정보를 불러올 수 없습니다 (" + response.status + ").");
   const body = await response.json() as { data?: Record<string, Detail> };
-  const value = body.data?.[id] || Object.values(body.data || {})[0];
+  const value = body.data?.[id];
   if (!value || !Array.isArray(value.spells)) throw new Error(champion.name + ": 공식 스킬 데이터 형식이 예상과 다릅니다.");
   return value;
 }
@@ -51,6 +51,7 @@ export default function AllMatchupResearch({ enemy, lane, champions }: { enemy: 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const lookupSequence = useRef(0);
 
   const enemyRecord = champions.find((item) => item.name === enemy);
   const references = useMemo(() => new Map((REFS[lane] || []).filter((r) => r.opponent === enemy).map((r) => [r.champion, r])), [enemy, lane]);
@@ -60,9 +61,10 @@ export default function AllMatchupResearch({ enemy, lane, champions }: { enemy: 
     .sort((a, b) => Number(Boolean(references.get(b.name))) - Number(Boolean(references.get(a.name))) || a.name.localeCompare(b.name, "ko")), [champions, enemy, scope, lane, query, references]);
   const chosen = champions.find((c) => c.name === selected);
   const reference = chosen && references.get(chosen.name);
-  useEffect(() => { setDetails(null); setSelected(""); setError(""); setShowAll(false); }, [enemy, lane]);
+  useEffect(() => { lookupSequence.current += 1; setDetails(null); setSelected(""); setError(""); setShowAll(false); setLoading(false); }, [enemy, lane]);
 
   async function inspect(champ: Champion) {
+    const lookupId = ++lookupSequence.current;
     setSelected(champ.name); setDetails(null); setLoading(true); setError("");
     try {
       if (!enemyRecord) throw new Error("상대 챔피언을 찾을 수 없습니다.");
@@ -72,9 +74,9 @@ export default function AllMatchupResearch({ enemy, lane, champions }: { enemy: 
       const latest = versions[0];
       if (!latest || !/^\d+\.\d+\.\d+$/.test(latest)) throw new Error("공식 데이터 버전이 올바르지 않습니다.");
       const [mine, opponent] = await Promise.all([loadDetail(latest, champ), loadDetail(latest, enemyRecord)]);
-      setVersion(latest); setDetails({ mine, enemy: opponent });
-    } catch (e) { setError(e instanceof Error ? e.message : "공식 데이터 조회 실패"); }
-    finally { setLoading(false); }
+      if (lookupId === lookupSequence.current) { setVersion(latest); setDetails({ mine, enemy: opponent }); }
+    } catch (e) { if (lookupId === lookupSequence.current) setError(e instanceof Error ? e.message : "공식 데이터 조회 실패"); }
+    finally { if (lookupId === lookupSequence.current) setLoading(false); }
   }
 
   return <section className="box all-evidence-panel">
