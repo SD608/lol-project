@@ -38,6 +38,12 @@ class ProvisionalMatchupReviewTests(unittest.TestCase):
                 self.assertTrue(url.netloc)
                 self.assertTrue(source["label"])
 
+    def test_five_lanes_present_and_no_unreviewed_mass_generation(self):
+        rows = self.data["entries"]
+        self.assertEqual(len(rows), 14)
+        self.assertEqual({r["lane"] for r in rows}, LANES)
+        self.assertTrue(all(r["status"] == "provisional" for r in rows))
+
     def test_reverse_direction_exists_and_does_not_claim_approval(self):
         keys = {(row["lane"], row["champion"], row["opponent"]) for row in self.data["entries"]}
         for lane, champ, opp in keys:

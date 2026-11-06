@@ -119,6 +119,256 @@
           "url": "https://docs.google.com/spreadsheets/d/1uitjfV_owbxUrPZRZm-Q0KdarZaiSQFTGyG2IZjEVcU/edit#gid=700005"
         }
       ]
+    },
+    {
+      "lane": "탑",
+      "champion": "뽀삐",
+      "opponent": "이렐리아",
+      "assessment": "스킬 상호작용 우위 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "이렐리아 Q 진입 타이밍",
+      "mechanisms": [
+        "이렐리아 Q 칼날 쇄도는 진입과 표식·처치에 따른 재사용이 핵심이다.",
+        "뽀삐 W 굳건한 태세는 진입 돌진을 방해해 이렐리아의 연속 진입을 제약할 수 있다.",
+        "뽀삐 W가 없는 동안 미니언 체력과 표식에 따라 이렐리아의 진입 경로가 열린다."
+      ],
+      "counterplay": "이렐리아 Q 진입 때 W를 아껴 쓰고 벽 근처의 E 각도 경계한다.",
+      "limitations": "시전 타이밍·표식·아이템·정글 개입에 따라 유불리가 달라져 확정 카운터라고 볼 수 없다.",
+      "sources": [
+        {
+          "label": "뽀삐 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/poppy/"
+        },
+        {
+          "label": "이렐리아 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/irelia/"
+        }
+      ]
+    },
+    {
+      "lane": "탑",
+      "champion": "이렐리아",
+      "opponent": "뽀삐",
+      "assessment": "상대 스킬 대응에 주의 · 잠정",
+      "status": "provisional",
+      "phase": "이렐리아 Q 진입 타이밍",
+      "mechanisms": [
+        "뽀삐 W 굳건한 태세는 진입 돌진을 방해해 이렐리아의 연속 진입을 제약할 수 있다.",
+        "이렐리아 Q 칼날 쇄도는 진입과 표식·처치에 따른 재사용이 핵심이다.",
+        "뽀삐 W가 없는 동안 미니언 체력과 표식에 따라 이렐리아의 진입 경로가 열린다."
+      ],
+      "counterplay": "뽀삐 W가 활성화된 동안 Q 진입을 피하고 표식과 미니언을 통한 경로를 확보한다.",
+      "limitations": "시전 타이밍·표식·아이템·정글 개입에 따라 유불리가 달라져 확정 카운터라고 볼 수 없다.",
+      "sources": [
+        {
+          "label": "이렐리아 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/irelia/"
+        },
+        {
+          "label": "뽀삐 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/poppy/"
+        }
+      ]
+    },
+    {
+      "lane": "정글",
+      "champion": "람머스",
+      "opponent": "마스터 이",
+      "assessment": "스킬 상호작용 우위 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "정글 조우·중반 소규모 교전",
+      "mechanisms": [
+        "마스터 이는 기본 공격과 공격 속도를 활용하는 지속 교전에 강점이 있다.",
+        "람머스는 W 몸 말아 웅크리기와 E 도발로 기본 공격 위주의 교전 계획을 방해할 수 있다.",
+        "마스터 이의 명상·일격 필살과 고정 피해, 아이템 구성에 따라 람머스가 항상 우세한 것은 아니다."
+      ],
+      "counterplay": "마스터 이가 들어올 때 W·E를 활용하되 명상과 Q 사용 후의 역공을 고려한다.",
+      "limitations": "방어력·반사 효과가 마스터 이의 고정 피해를 무력화하는 것은 아니다. 실측 승률 없음.",
+      "sources": [
+        {
+          "label": "람머스 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/rammus/"
+        },
+        {
+          "label": "마스터 이 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/masteryi/"
+        }
+      ]
+    },
+    {
+      "lane": "정글",
+      "champion": "마스터 이",
+      "opponent": "람머스",
+      "assessment": "상대 스킬 대응에 주의 · 잠정",
+      "status": "provisional",
+      "phase": "정글 조우·중반 소규모 교전",
+      "mechanisms": [
+        "람머스는 W 몸 말아 웅크리기와 E 도발로 기본 공격 위주의 교전 계획을 방해할 수 있다.",
+        "마스터 이는 기본 공격과 공격 속도를 활용하는 지속 교전에 강점이 있다.",
+        "마스터 이의 명상·일격 필살과 고정 피해, 아이템 구성에 따라 람머스가 항상 우세한 것은 아니다."
+      ],
+      "counterplay": "람머스 W 방어 구간에서 무리한 기본 공격 교환을 피하고 도발 사용 여부를 확인한다.",
+      "limitations": "방어력·반사 효과가 마스터 이의 고정 피해를 무력화하는 것은 아니다. 실측 승률 없음.",
+      "sources": [
+        {
+          "label": "마스터 이 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/masteryi/"
+        },
+        {
+          "label": "람머스 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/rammus/"
+        }
+      ]
+    },
+    {
+      "lane": "미드",
+      "champion": "애니",
+      "opponent": "카타리나",
+      "assessment": "스킬 상호작용 우위 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "6레벨 이후 궁극기 교전",
+      "mechanisms": [
+        "애니의 방화광 중첩이 준비되면 다음 공격 스킬로 기절을 적용할 수 있다.",
+        "카타리나는 순보로 진입해 궁극기 죽음의 연꽃으로 범위 피해를 주는 교전을 노린다.",
+        "애니가 기절을 보유하면 카타리나의 궁극기 활용이 제한될 여지가 있지만 기절 소모 직후에는 진입 각이 열린다."
+      ],
+      "counterplay": "기절 중첩을 남겨 카타리나 진입과 궁극기 사용을 제어한다.",
+      "limitations": "순보 회피·기절 적중·로밍 및 아이템에 따라 결과가 달라진다.",
+      "sources": [
+        {
+          "label": "애니 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/annie/"
+        },
+        {
+          "label": "카타리나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/katarina/"
+        }
+      ]
+    },
+    {
+      "lane": "미드",
+      "champion": "카타리나",
+      "opponent": "애니",
+      "assessment": "상대 스킬 대응에 주의 · 잠정",
+      "status": "provisional",
+      "phase": "6레벨 이후 궁극기 교전",
+      "mechanisms": [
+        "카타리나는 순보로 진입해 궁극기 죽음의 연꽃으로 범위 피해를 주는 교전을 노린다.",
+        "애니의 방화광 중첩이 준비되면 다음 공격 스킬로 기절을 적용할 수 있다.",
+        "애니가 기절을 보유하면 카타리나의 궁극기 활용이 제한될 여지가 있지만 기절 소모 직후에는 진입 각이 열린다."
+      ],
+      "counterplay": "애니 기절 준비 상태에서는 무리한 궁극기 사용을 피하고 기절 소모 후 진입을 노린다.",
+      "limitations": "순보 회피·기절 적중·로밍 및 아이템에 따라 결과가 달라진다.",
+      "sources": [
+        {
+          "label": "카타리나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/katarina/"
+        },
+        {
+          "label": "애니 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/annie/"
+        }
+      ]
+    },
+    {
+      "lane": "바텀",
+      "champion": "케이틀린",
+      "opponent": "베인",
+      "assessment": "스킬 상호작용 우위 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "초반 라인전·베인 성장 이후",
+      "mechanisms": [
+        "케이틀린은 기본 공격 사거리와 덫으로 상대가 미니언에 접근하는 구간을 견제할 수 있다.",
+        "베인은 구르기·선고로 위치를 바꾸고 은화살의 같은 대상 연속 공격으로 맞대응한다.",
+        "초반 사거리 우위와 후반 지속 피해 잠재력은 별개이며 서포터 조합에 따라 효과가 달라진다."
+      ],
+      "counterplay": "초반 거리 우위를 활용하되 덫·투망으로 베인 진입과 벽 선고를 경계한다.",
+      "limitations": "서포터 조합·웨이브·정글·숙련도에 민감하므로 경기 승률이나 등급으로 환산하지 않는다.",
+      "sources": [
+        {
+          "label": "케이틀린 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/caitlyn/"
+        },
+        {
+          "label": "베인 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/vayne/"
+        }
+      ]
+    },
+    {
+      "lane": "바텀",
+      "champion": "베인",
+      "opponent": "케이틀린",
+      "assessment": "상대 스킬 대응에 주의 · 잠정",
+      "status": "provisional",
+      "phase": "초반 라인전·베인 성장 이후",
+      "mechanisms": [
+        "베인은 구르기·선고로 위치를 바꾸고 은화살의 같은 대상 연속 공격으로 맞대응한다.",
+        "케이틀린은 기본 공격 사거리와 덫으로 상대가 미니언에 접근하는 구간을 견제할 수 있다.",
+        "초반 사거리 우위와 후반 지속 피해 잠재력은 별개이며 서포터 조합에 따라 효과가 달라진다."
+      ],
+      "counterplay": "초반 견제로 체력을 잃지 않고 구르기·선고로 접근 가능한 구간을 노린다.",
+      "limitations": "서포터 조합·웨이브·정글·숙련도에 민감하므로 경기 승률이나 등급으로 환산하지 않는다.",
+      "sources": [
+        {
+          "label": "베인 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/vayne/"
+        },
+        {
+          "label": "케이틀린 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/caitlyn/"
+        }
+      ]
+    },
+    {
+      "lane": "서폿",
+      "champion": "모르가나",
+      "opponent": "블리츠크랭크",
+      "assessment": "스킬 상호작용 우위 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "라인전 로켓 손 교환",
+      "mechanisms": [
+        "블리츠크랭크는 Q 로켓 손과 E 띄우기로 적을 끌어와 교전을 만든다.",
+        "모르가나 E 칠흑의 방패는 유지되는 동안 군중제어 효과를 막아 그랩 중심 진입에 대응할 수 있다.",
+        "방패가 먼저 빠지거나 파괴되면 블리츠크랭크의 진입 위협이 커지며 궁극기 효과도 따로 고려해야 한다."
+      ],
+      "counterplay": "로켓 손 위협을 확인해 핵심 대상에게 E를 주고 쿨다운 중에는 거리를 유지한다.",
+      "limitations": "방패 타이밍·피해 흡수·대상 선택과 다른 스킬에 따라 효과가 달라진다.",
+      "sources": [
+        {
+          "label": "모르가나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/morgana/"
+        },
+        {
+          "label": "블리츠크랭크 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/blitzcrank/"
+        }
+      ]
+    },
+    {
+      "lane": "서폿",
+      "champion": "블리츠크랭크",
+      "opponent": "모르가나",
+      "assessment": "상대 스킬 대응에 주의 · 잠정",
+      "status": "provisional",
+      "phase": "라인전 로켓 손 교환",
+      "mechanisms": [
+        "모르가나 E 칠흑의 방패는 유지되는 동안 군중제어 효과를 막아 그랩 중심 진입에 대응할 수 있다.",
+        "블리츠크랭크는 Q 로켓 손과 E 띄우기로 적을 끌어와 교전을 만든다.",
+        "방패가 먼저 빠지거나 파괴되면 블리츠크랭크의 진입 위협이 커지며 궁극기 효과도 따로 고려해야 한다."
+      ],
+      "counterplay": "모르가나 E 재사용 대기시간이나 방패가 없는 대상을 노린다.",
+      "limitations": "방패 타이밍·피해 흡수·대상 선택과 다른 스킬에 따라 효과가 달라진다.",
+      "sources": [
+        {
+          "label": "블리츠크랭크 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/blitzcrank/"
+        },
+        {
+          "label": "모르가나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/morgana/"
+        }
+      ]
     }
   ]
 }

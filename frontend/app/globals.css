@@ -258,7 +258,7 @@ p{line-height:1.55;margin:8px 0}
 @media(max-width:767px){.all-evidence-option{grid-template-columns:minmax(90px,1fr) minmax(120px,1.2fr)}.all-evidence-option span:nth-child(2),.all-evidence-option span:last-child{display:none}.all-evidence-columns{grid-template-columns:1fr}}
 
 /* Evidence-backed provisional evaluations never contaminate approved counter grades */
-.mechanic-review-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:17px 0}
+.mechanic-review-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:14px;margin:17px 0}
 .mechanic-review-card{border:1px solid #bbb;border-radius:5px;padding:16px;min-width:0}
 .mechanic-review-heading{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .mechanic-review-heading strong{font-size:17px}
