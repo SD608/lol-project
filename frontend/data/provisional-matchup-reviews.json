@@ -369,6 +369,314 @@
           "url": "https://www.leagueoflegends.com/ko-kr/champions/morgana/"
         }
       ]
+    },
+    {
+      "lane": "탑",
+      "champion": "말파이트",
+      "opponent": "트린다미어",
+      "assessment": "특정 교전 조건 우세 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "라인전 기본 공격 교환·6레벨 이후",
+      "mechanisms": [
+        "말파이트 E 지면 강타는 적 공격 속도를 낮추므로 기본 공격 연계에 의존하는 트린다미어의 교전 효율에 영향을 준다.",
+        "트린다미어는 분노로 치명타 확률을 높이고 회전 베기로 접근하거나 이탈하며 피의 갈망으로 체력을 회복할 수 있다.",
+        "트린다미어의 불사의 분노 사용 구간에는 처치 시도보다 지속시간 관리가 필요하고 말파이트의 화강암 방패 재생도 교전 간격을 바꾼다."
+      ],
+      "counterplay": "화강암 방패와 지면 강타로 평타 교환을 줄이고 트린다미어 궁극기 활성 구간에 무리하게 처형하려 하지 않는다.",
+      "limitations": "공격 속도 저하의 영향이 아이템·분노·스킬 수준에 따라 달라지며 트린다미어의 궁극기는 CC 자체를 막는 스킬이 아니다.",
+      "sources": [
+        {
+          "label": "말파이트 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/malphite/"
+        },
+        {
+          "label": "트린다미어 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/tryndamere/"
+        },
+        {
+          "label": "관련 공식 패치 참고",
+          "url": "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-17-notes/"
+        }
+      ]
+    },
+    {
+      "lane": "탑",
+      "champion": "트린다미어",
+      "opponent": "말파이트",
+      "assessment": "상대 스킬 대응 주의 · 잠정",
+      "status": "provisional",
+      "phase": "라인전 기본 공격 교환·6레벨 이후",
+      "mechanisms": [
+        "트린다미어는 분노로 치명타 확률을 높이고 회전 베기로 접근하거나 이탈하며 피의 갈망으로 체력을 회복할 수 있다.",
+        "말파이트 E 지면 강타는 적 공격 속도를 낮추므로 기본 공격 연계에 의존하는 트린다미어의 교전 효율에 영향을 준다.",
+        "트린다미어의 불사의 분노 사용 구간에는 처치 시도보다 지속시간 관리가 필요하고 말파이트의 화강암 방패 재생도 교전 간격을 바꾼다."
+      ],
+      "counterplay": "말파이트 E가 빠진 시점에 교전하고 Q 견제·보호막 재생 구간을 고려한다. 궁극기 종료 시점을 관리한다.",
+      "limitations": "공격 속도 저하의 영향이 아이템·분노·스킬 수준에 따라 달라지며 트린다미어의 궁극기는 CC 자체를 막는 스킬이 아니다.",
+      "sources": [
+        {
+          "label": "트린다미어 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/tryndamere/"
+        },
+        {
+          "label": "말파이트 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/malphite/"
+        },
+        {
+          "label": "관련 공식 패치 참고",
+          "url": "https://www.leagueoflegends.com/ko-kr/news/game-updates/league-of-legends-patch-26-17-notes/"
+        }
+      ]
+    },
+    {
+      "lane": "정글",
+      "champion": "트런들",
+      "opponent": "세주아니",
+      "assessment": "특정 교전 조건 우세 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "6레벨 이후 전면 교전",
+      "mechanisms": [
+        "트런들 R 진압은 적 대상의 체력과 방어력·마법 저항력 일부를 훔치므로 탱커의 방어 능력치에 직접 관여한다.",
+        "세주아니는 서리 갑옷을 통해 방어력·마법 저항력을 확보하고 Q·E·R 군중제어로 먼저 교전을 열 수 있다.",
+        "트런들이 진압을 사용한 뒤에도 세주아니의 군중제어와 근접 아군 연계가 없어지는 것은 아니다."
+      ],
+      "counterplay": "세주아니의 진입과 CC 사용을 확인하고 진압을 활용할 교전 대상을 선택한다. 얼음 기둥으로 이동 경로를 제한한다.",
+      "limitations": "능력치 강탈은 대상·스킬 순서·아이템·패치에 영향받으며 정글 승률을 추론하지 않는다.",
+      "sources": [
+        {
+          "label": "트런들 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/trundle/"
+        },
+        {
+          "label": "세주아니 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/sejuani/"
+        }
+      ]
+    },
+    {
+      "lane": "정글",
+      "champion": "세주아니",
+      "opponent": "트런들",
+      "assessment": "상대 스킬 대응 주의 · 잠정",
+      "status": "provisional",
+      "phase": "6레벨 이후 전면 교전",
+      "mechanisms": [
+        "세주아니는 서리 갑옷을 통해 방어력·마법 저항력을 확보하고 Q·E·R 군중제어로 먼저 교전을 열 수 있다.",
+        "트런들 R 진압은 적 대상의 체력과 방어력·마법 저항력 일부를 훔치므로 탱커의 방어 능력치에 직접 관여한다.",
+        "트런들이 진압을 사용한 뒤에도 세주아니의 군중제어와 근접 아군 연계가 없어지는 것은 아니다."
+      ],
+      "counterplay": "트런들의 진압이 사용될 수 있는 구간에 방어 능력치에만 의존하지 말고, CC로 아군 연계 시간을 확보한다.",
+      "limitations": "능력치 강탈은 대상·스킬 순서·아이템·패치에 영향받으며 정글 승률을 추론하지 않는다.",
+      "sources": [
+        {
+          "label": "세주아니 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/sejuani/"
+        },
+        {
+          "label": "트런들 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/trundle/"
+        }
+      ]
+    },
+    {
+      "lane": "미드",
+      "champion": "리산드라",
+      "opponent": "카타리나",
+      "assessment": "특정 교전 조건 우세 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "6레벨 이후 진입·궁극기 교환",
+      "mechanisms": [
+        "리산드라는 W 서릿발로 주변 적을 묶고 R 얼음 무덤을 적에게 사용하면 기절을 가할 수 있다.",
+        "카타리나는 E 순보로 진입해 R 죽음의 연꽃을 통한 범위 공격을 노리므로 진입 순간 군중제어에 노출될 수 있다.",
+        "리산드라 R의 자기 시전은 생존 수단이지만 적 카타리나를 기절시키는 시전과 동일하지 않다."
+      ],
+      "counterplay": "카타리나의 순보 경로와 단검 착지 위치를 보고 W·R을 아껴 진입 및 궁극기 사용 구간에 대응한다.",
+      "limitations": "대상 위치·순보 회피·궁극기 타이밍에 따라 결과가 달라지는 잠정적 메커니즘 분석이다.",
+      "sources": [
+        {
+          "label": "리산드라 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/lissandra/"
+        },
+        {
+          "label": "카타리나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/katarina/"
+        }
+      ]
+    },
+    {
+      "lane": "미드",
+      "champion": "카타리나",
+      "opponent": "리산드라",
+      "assessment": "상대 스킬 대응 주의 · 잠정",
+      "status": "provisional",
+      "phase": "6레벨 이후 진입·궁극기 교환",
+      "mechanisms": [
+        "카타리나는 E 순보로 진입해 R 죽음의 연꽃을 통한 범위 공격을 노리므로 진입 순간 군중제어에 노출될 수 있다.",
+        "리산드라는 W 서릿발로 주변 적을 묶고 R 얼음 무덤을 적에게 사용하면 기절을 가할 수 있다.",
+        "리산드라 R의 자기 시전은 생존 수단이지만 적 카타리나를 기절시키는 시전과 동일하지 않다."
+      ],
+      "counterplay": "리산드라 W·R 사용 여부를 확인해 진입하고 단검 재진입 경로를 확보한다.",
+      "limitations": "대상 위치·순보 회피·궁극기 타이밍에 따라 결과가 달라지는 잠정적 메커니즘 분석이다.",
+      "sources": [
+        {
+          "label": "카타리나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/katarina/"
+        },
+        {
+          "label": "리산드라 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/lissandra/"
+        }
+      ]
+    },
+    {
+      "lane": "서폿",
+      "champion": "잔나",
+      "opponent": "알리스타",
+      "assessment": "특정 교전 조건 우세 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "라인전 WQ 진입과 한타 이니시",
+      "mechanisms": [
+        "알리스타는 W 박치기로 거리를 좁힌 뒤 Q 분쇄로 적을 공중에 띄우는 교전을 노린다.",
+        "잔나 Q 울부짖는 돌풍의 에어본과 R 계절풍의 밀쳐내기는 알리스타의 진입 이후 후속 연계를 방해할 수 있다.",
+        "잔나가 주요 스킬을 먼저 소모한 상태에서는 알리스타 진입을 막을 수 있는 선택지가 줄어든다."
+      ],
+      "counterplay": "알리스타의 WQ 진입 각을 확인하고 Q를 지키거나 R로 아군과의 거리를 벌린다.",
+      "limitations": "잔나 Q의 충돌 시점과 알리스타 연계 속도에 따라 차단 여부가 달라지며 확정 상성 승리를 의미하지 않는다.",
+      "sources": [
+        {
+          "label": "잔나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/janna/"
+        },
+        {
+          "label": "알리스타 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/alistar/"
+        }
+      ]
+    },
+    {
+      "lane": "서폿",
+      "champion": "알리스타",
+      "opponent": "잔나",
+      "assessment": "상대 스킬 대응 주의 · 잠정",
+      "status": "provisional",
+      "phase": "라인전 WQ 진입과 한타 이니시",
+      "mechanisms": [
+        "잔나 Q 울부짖는 돌풍의 에어본과 R 계절풍의 밀쳐내기는 알리스타의 진입 이후 후속 연계를 방해할 수 있다.",
+        "알리스타는 W 박치기로 거리를 좁힌 뒤 Q 분쇄로 적을 공중에 띄우는 교전을 노린다.",
+        "잔나가 주요 스킬을 먼저 소모한 상태에서는 알리스타 진입을 막을 수 있는 선택지가 줄어든다."
+      ],
+      "counterplay": "잔나 Q·R 재사용 대기시간을 확인하고 진입 전 접근 경로를 바꿔 핵심 스킬을 유도한다.",
+      "limitations": "잔나 Q의 충돌 시점과 알리스타 연계 속도에 따라 차단 여부가 달라지며 확정 상성 승리를 의미하지 않는다.",
+      "sources": [
+        {
+          "label": "알리스타 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/alistar/"
+        },
+        {
+          "label": "잔나 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/janna/"
+        }
+      ]
+    },
+    {
+      "lane": "바텀",
+      "champion": "케이틀린",
+      "opponent": "이즈리얼",
+      "assessment": "특정 교전 조건 우세 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "초반 포킹·이즈리얼 비전 이동 대응",
+      "mechanisms": [
+        "케이틀린은 기본 공격 사거리와 요들잡이 덫, 투망을 이용해 원거리 교전과 포지션을 통제한다.",
+        "이즈리얼은 Q 신비한 화살로 원거리에서 피해를 주고 E 비전 이동으로 일부 위험 구간을 벗어날 수 있다.",
+        "이즈리얼의 비전 이동이 빠진 동안 케이틀린의 덫·투망 압박이 강화될 수 있으나 실제 라인전은 서포터 조합과 스킬 적중에 좌우된다."
+      ],
+      "counterplay": "이즈리얼 E 사용 여부를 확인하며 덫을 설치하고 미니언·사거리로 안전하게 압박한다.",
+      "limitations": "이즈리얼의 Q는 미니언에 막히며 케이틀린 덫 상호작용은 E 타이밍에 따라 달라진다. 실측 승률 자료 없음.",
+      "sources": [
+        {
+          "label": "케이틀린 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/caitlyn/"
+        },
+        {
+          "label": "이즈리얼 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/ezreal/"
+        }
+      ]
+    },
+    {
+      "lane": "바텀",
+      "champion": "이즈리얼",
+      "opponent": "케이틀린",
+      "assessment": "상대 스킬 대응 주의 · 잠정",
+      "status": "provisional",
+      "phase": "초반 포킹·이즈리얼 비전 이동 대응",
+      "mechanisms": [
+        "이즈리얼은 Q 신비한 화살로 원거리에서 피해를 주고 E 비전 이동으로 일부 위험 구간을 벗어날 수 있다.",
+        "케이틀린은 기본 공격 사거리와 요들잡이 덫, 투망을 이용해 원거리 교전과 포지션을 통제한다.",
+        "이즈리얼의 비전 이동이 빠진 동안 케이틀린의 덫·투망 압박이 강화될 수 있으나 실제 라인전은 서포터 조합과 스킬 적중에 좌우된다."
+      ],
+      "counterplay": "비전 이동을 핵심 회피 수단으로 보존하고 미니언을 이용해 케이틀린의 사거리 압박을 줄인다.",
+      "limitations": "이즈리얼의 Q는 미니언에 막히며 케이틀린 덫 상호작용은 E 타이밍에 따라 달라진다. 실측 승률 자료 없음.",
+      "sources": [
+        {
+          "label": "이즈리얼 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/ezreal/"
+        },
+        {
+          "label": "케이틀린 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/caitlyn/"
+        }
+      ]
+    },
+    {
+      "lane": "탑",
+      "champion": "케이틀린",
+      "opponent": "트린다미어",
+      "assessment": "특정 교전 조건 우세 가능성 · 잠정",
+      "status": "provisional",
+      "phase": "비주류 탑: 초반 원거리 견제와 6레벨 이후 접근",
+      "mechanisms": [
+        "비주류 탑 케이틀린은 기본 공격 사거리와 덫·투망을 이용해 근접 챔피언이 미니언에 접근할 때 압박할 수 있다.",
+        "트린다미어는 회전 베기 돌진과 분노 기반 치명타, 피의 갈망 회복으로 원거리 견제에 대응할 수 있다.",
+        "트린다미어가 6레벨 이후 불사의 분노를 확보하면 케이틀린의 거리 유지와 궁극기 지속시간 관리가 중요해진다."
+      ],
+      "counterplay": "초반부터 일방적인 긴 교전은 피하고 투망과 덫을 생존 수단으로 관리한다. 트린다미어 R 사용 시 시간을 벌어야 한다.",
+      "limitations": "주류 라인 통계가 아닌 비주류 가상 대진의 스킬 구조 분석이다. 챔피언 숙련도와 정글 개입, 라인 유지력이 실제 성과를 크게 바꾼다.",
+      "sources": [
+        {
+          "label": "케이틀린 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/caitlyn/"
+        },
+        {
+          "label": "트린다미어 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/tryndamere/"
+        }
+      ]
+    },
+    {
+      "lane": "탑",
+      "champion": "트린다미어",
+      "opponent": "케이틀린",
+      "assessment": "상대 스킬 대응 주의 · 잠정",
+      "status": "provisional",
+      "phase": "비주류 탑: 초반 원거리 견제와 6레벨 이후 접근",
+      "mechanisms": [
+        "트린다미어는 회전 베기 돌진과 분노 기반 치명타, 피의 갈망 회복으로 원거리 견제에 대응할 수 있다.",
+        "비주류 탑 케이틀린은 기본 공격 사거리와 덫·투망을 이용해 근접 챔피언이 미니언에 접근할 때 압박할 수 있다.",
+        "트린다미어가 6레벨 이후 불사의 분노를 확보하면 케이틀린의 거리 유지와 궁극기 지속시간 관리가 중요해진다."
+      ],
+      "counterplay": "케이틀린 투망과 덫의 위치를 확인하고, 접근 전 체력·분노를 관리한다. 회전 베기 진입 후 탈출 경로를 남긴다.",
+      "limitations": "주류 라인 통계가 아닌 비주류 가상 대진의 스킬 구조 분석이다. 챔피언 숙련도와 정글 개입, 라인 유지력이 실제 성과를 크게 바꾼다.",
+      "sources": [
+        {
+          "label": "트린다미어 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/tryndamere/"
+        },
+        {
+          "label": "케이틀린 공식 스킬",
+          "url": "https://www.leagueoflegends.com/ko-kr/champions/caitlyn/"
+        }
+      ]
     }
   ]
 }

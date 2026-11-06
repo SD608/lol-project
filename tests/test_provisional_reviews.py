@@ -40,7 +40,8 @@ class ProvisionalMatchupReviewTests(unittest.TestCase):
 
     def test_five_lanes_present_and_no_unreviewed_mass_generation(self):
         rows = self.data["entries"]
-        self.assertEqual(len(rows), 14)
+        self.assertEqual(len(rows), 26)
+        self.assertTrue(any(r["lane"] == "탑" and r["champion"] == "케이틀린" and r["opponent"] == "트린다미어" for r in rows))
         self.assertEqual({r["lane"] for r in rows}, LANES)
         self.assertTrue(all(r["status"] == "provisional" for r in rows))
 
