@@ -23,6 +23,7 @@ type Props = {
 const EXTRA_ALIASES: Record<string, string[]> = {
   "케이틀린": ["케틀", "케틀린"],
   "미스 포츈": ["미포"],
+  "징크스": ["징키"],
   "트위스티드 페이트": ["트페"],
   "아우렐리온 솔": ["아우솔"],
   "이즈리얼": ["이즈"],
@@ -43,7 +44,7 @@ function initials(text: string) {
   }).join("").replace(/\s/g, "");
 }
 
-function matchRank(item: SearchChampion, query: string) {
+export function matchRank(item: SearchChampion, query: string) {
   const q = normalize(query);
   if (!q) return 1;
   const name = normalize(item.name);

@@ -1,0 +1,15 @@
+{
+  "patch": "26.22",
+  "source_sha256": "d0305827dfa9e8f482b30de2b4ec4bcd87d1152115150346365539a253d6fd74",
+  "rows_compared_with_uploaded_workbook": 14468,
+  "fields_compared_per_row": 11,
+  "mismatches": 0,
+  "counts": {
+    "champions": 173,
+    "registrations": 266,
+    "matchups": 14468,
+    "statistical": 110,
+    "theoretical": 14358
+  },
+  "database_writes": false
+}
