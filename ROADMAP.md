@@ -100,3 +100,6 @@ KR League-V4 → PUUID 기반 Match-V5 경기 ID 탐색 → 중복 제거 → �
 최신 main을 조사한 뒤 별도 feat/counter-encyclopedia 브랜치에서 Next.js·FastAPI를 재사용했습니다. 제공 엑셀 173명/266개 등록/14,468개 대진을 정적 JSON으로 변환하고 상대 관점 인덱스로 조회합니다. 실측 분류 110개와 이론 14,358개를 별도 표시하며 원문 판정·사유를 변경하지 않았습니다. 새 테이블/SQL 쓰기/통계 혼합 없이 기존 14개 Supabase 테이블과 기존 API를 유지합니다. UI는 다크모드 포지션→상대 선택→즉시 카운터 표시만 제공합니다.
 
 검증: unittest 86개(80 통과, 라이브 DATABASE_URL 없는 6개 skip), 기존 backend pytest 13개 통과, resolver 테스트·Next production build 통과. PC/모바일 실제 Chromium에서 원문 사유/방향/별칭·초성/라인 초기화/가로 넘침/이미지 fallback/JS 오류 검사 완료. 엑셀 전체 행 × 11개 사용 필드 JSON 비교 불일치 0. 실제 CDN의 전체 이미지 다운로드·실기기·운영 배포·라이브 DB 재검증은 미실행. 실행과 상세 범위는 docs/counter-guide.md.
+
+
+원클릭 로컬 실행기 추가: Windows .cmd / macOS .command / 공통 start.py. 최초 의존성 설치, 준비 완료 후 브라우저 두 탭 열기, 포트 충돌 안내, Ctrl+C 전체 서버 정리를 구현했습니다. Linux에서 실제 양 서버 시작→Next 프록시 카운터 조회→Ctrl+C 양 프로세스 종료 검증 통과. Windows/macOS 실제 OS의 더블클릭 및 기본 브라우저 실행은 미검증입니다.

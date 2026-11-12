@@ -1,5 +1,8 @@
 # PICKOU(픽유) — 근거 기반 상성 데이터 시스템
 
+**한 번에 실행:** Windows는 루트의 `PICKOU 시작.cmd`, macOS는 `PICKOU 시작.command`를 더블클릭하세요. 백엔드·프런트엔드를 함께 켜고 브라우저의 PICKOU와 API 문서 탭을 엽니다. Python과 Node.js LTS가 필요하며 첫 실행에는 의존성을 자동 설치합니다. [자세한 안내](docs/counter-guide.md#더블클릭으로-실행).
+
+
 현재 웹앱은 **라인별 챔피언 카운터 도감**입니다. 상대를 선택하면 제공 26.22 엑셀의 카운터·사유가 바로 표시됩니다. [실행·데이터·검증 안내](docs/counter-guide.md). 기존 통계/DB 모듈은 보존하되 현재 UI와 분리했습니다.
 
 

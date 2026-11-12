@@ -8,3 +8,5 @@ credentials*.json
 data/read_only/*
 
 .venv/
+
+.pickou/

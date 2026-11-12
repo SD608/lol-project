@@ -64,3 +64,13 @@ python scripts/build_counter_guide.py /path/to/PICKOU_26_22_라인별_챔피언_
 ```bash
 PICKOU_TEST_URL=http://127.0.0.1:3000 python tests/browser_counter_guide.py
 ```
+
+## 더블클릭으로 실행
+
+- **Windows:** 루트의 `PICKOU 시작.cmd`를 더블클릭합니다.
+- **macOS:** 루트의 `PICKOU 시작.command`를 더블클릭합니다.
+- **Linux / 터미널:** 루트에서 `python3 start.py`를 실행합니다.
+
+Python 3.10 이상과 Node.js LTS가 필요합니다. 첫 실행에는 인터넷으로 기존 고정 의존성을 `.venv`와 `frontend/node_modules`에 설치하고, 이후에는 의존성이 바뀔 때만 다시 설치합니다. 백엔드(8000)와 프런트엔드(3000)가 모두 준비되면 브라우저에서 **PICKOU 화면과 백엔드 API 문서** 두 탭을 자동으로 엽니다. 터미널에서 Ctrl+C를 누르면 두 서버를 함께 종료합니다. 사용 중인 포트가 있으면 기존 프로세스를 종료하지 않고 오류를 안내합니다. 로그는 `.pickou/logs/`에 저장합니다.
+
+포트 변경: `python3 start.py --backend-port 8002 --frontend-port 3002`. 브라우저 자동 열기 제외: `--no-open`.
