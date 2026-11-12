@@ -12,6 +12,7 @@ from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from rift.database import ALIASES, initials
+from backend.counter_guide import router as counter_router, load_guide
 
 LANES = ("탑", "정글", "미드", "바텀", "서폿")
 ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,600}$")
@@ -62,6 +63,7 @@ def match_search(champion, q):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    load_guide()
     url = os.environ.get("DATABASE_URL")
     app.state.pool = None
     if url:
@@ -99,6 +101,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="PICKOU Read API", version="1.0.0", lifespan=lifespan)
+app.include_router(counter_router)
 origins = [u.strip() for u in os.getenv("CORS_ORIGINS", "").split(",") if u.strip()]
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["GET"], allow_headers=["Accept", "Content-Type"])
 

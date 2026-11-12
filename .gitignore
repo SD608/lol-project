@@ -6,3 +6,7 @@ credentials*.json
 
 # Private source snapshots stay local; publish aggregate validation summary only.
 data/read_only/*
+
+.venv/
+
+.pickou/
