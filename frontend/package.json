@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:resolver && next build",
+    "build": "npm run test:resolver && npm run test:favorites && next build",
     "start": "next start",
     "lint": "eslint .",
-    "test:resolver": "node --test tests/riotChampionResolver.test.cjs"
+    "test:resolver": "node --test tests/riotChampionResolver.test.cjs",
+    "test:favorites": "node --test tests/favorites.test.cjs"
   },
   "dependencies": {
     "next": "15.5.29",
