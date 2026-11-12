@@ -28,10 +28,10 @@ with sync_playwright() as p:
   for lane in ['정글','미드','바텀','서폿']:
    page.get_by_role('button',name=lane,exact=False).first.click()
    expect(page.locator('.cg-result-title')).to_have_count(0)
-   expect(page.locator('.cg-champions button').first).to_be_visible()
+   expect(page.locator('.cg-champion-select').first).to_be_visible()
   page.get_by_role('button',name='바텀',exact=False).first.click()
   search=page.get_by_role('textbox',name='상대 챔피언 검색');search.fill('징키')
-  expect(page.locator('.cg-champions button')).to_have_count(1)
+  expect(page.locator('.cg-champion-select')).to_have_count(1)
   expect(page.get_by_role('button',name='징크스',exact=True)).to_be_visible()
   search.fill('ㅈㅋㅅ');expect(page.get_by_role('button',name='징크스',exact=True)).to_be_visible()
   page.get_by_role('button',name='징크스',exact=True).click()
